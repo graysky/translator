@@ -1,0 +1,21 @@
+I18nExtensions
+==============
+
+I18n Extensions make using the internationalization (i18n) facility introduced in Rails 2.2 simpler by keeping your code DRY.
+
+Example
+=======
+
+By sticking to a convention of locale key hierarchy like:
+
+en:
+  posts: # controller
+    index: # action
+      title: "My Blog Posts"
+    show:
+      byline: "Written by {{name}}"
+      
+
+
+
+Copyright (c) 2009 Mike Champion, released under the MIT license
