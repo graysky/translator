@@ -1,9 +1,5 @@
-require 'i18n_extensions'
-
-# ActionController::Base.class_eval do
-#   include ActionController::I18nExtensions
-# end
-
-#ActionView::Base.class_eval do
-#  include ActionView::Helpers::PaginationHelper
+#unless Rails::VERSION::MAJOR >= 2 && Rails::VERSION::MINOR >= 2
+#  raise "This version of I18n Extensions requires Rails 2.2 or higher."
 #end
+
+require 'i18n_extensions'

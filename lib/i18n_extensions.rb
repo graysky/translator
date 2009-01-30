@@ -9,39 +9,64 @@ require 'action_view/helpers/translation_helper'
 # - ActionMailer
 
 module I18nExtensions
+  VERSION = '0.1.0'
 
-  # TODO: Do we want to override scope if passed in?
-  
-  # Tests:
-  #
-  
   # TODO: Handle:
   # - partials (controller:partial:key)
   # - shared partials (folder:partial:key)
   # - layout (layout_name:key)
   #
   # - defaults (may have to pull them out for first attempt)
+  #
+  #
   def self.translate_with_scope(controller, action, key, options={})
-    #Rails.logger.info("controller: #{controller}/#{action} key: #{key}")
+    # Keep the original options clean
+    scoped_options = {}.merge(options)
     
     # Get the original scoping
-    #orig_scope = options[:scope].blank? ? options[:scope].clone || []
-    scope = options[:scope] || []
+    # From RDoc: 
+    # Scope can be either a single key, a dot-separated key or an array of keys or dot-separated keys
+    scope = []
+    # if !options[:scope].blank?
+    #       if options[:scope]
+    #       
+    #       scope += options[:scope] unless options[:scope].blank?
+    #     end
     
+    # Build up the scope
     scope.insert(0, controller.to_sym)
     scope.insert(1, action.to_sym)
     
-    # Merge the scope
-    options[:scope] = scope
+    # Raise to know if the key was found
+    scoped_options[:raise] = true
     
-    # Try with scope
-    #pp options
-    x = I18n.translate(key, options)
-    #puts "Found: #{x}"
-    x
+    # Merge the scope
+    scoped_options[:scope] = scope
+    
+    begin
+      # try with scope
+      I18n.translate(key, scoped_options)
+    rescue I18n::MissingTranslationData => exc
+      # Fall back to trying original
+      I18n.translate(key, options)
+    end
   end
 end
 
+# For View helpers
+class ActionView::Base
+  def translate_with_defaults(key, options={})
+    # TODO Handle partials, etc.
+    
+    
+    I18nExtensions.translate_with_scope(self.controller_name, self.template.name, key, options)
+  end
+  
+  alias_method_chain :translate, :defaults
+  alias :t :translate
+end
+
+# Include in controllers
 module ActionController #:nodoc:
   class Base
     def translate_with_defaults(key, options={})
@@ -51,18 +76,6 @@ module ActionController #:nodoc:
     alias_method_chain :translate, :defaults
     alias :t :translate
   end
-end
-
-# For view helpers
-class ActionView::Base
-  def translate_with_defaults(key, options={})
-    # TODO Handle partials, etc.
-    
-    I18nExtensions.translate_with_scope(self.controller_name, self.template.name, key, options)
-  end
-  
-  alias_method_chain :translate, :defaults
-  alias :t :translate
 end
 
 # 
