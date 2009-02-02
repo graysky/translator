@@ -56,12 +56,12 @@ end
 # For View helpers
 class ActionView::Base
   def translate_with_defaults(key, options={})
-    # TODO Handle partials, etc.
-    
+    # TODO Handle:
+    # - partials associated with single controllers
+    # - shared partials
+    #
     scope = self.template.name
 
-    
-    
     I18nExtensions.translate_with_scope(self.controller_name, scope, key, options)
   end
   
