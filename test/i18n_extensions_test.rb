@@ -8,7 +8,7 @@ require File.dirname(__FILE__) + '/../init'
 RAILS_ENV  = "test"
 
 # Stub a blog Posts (weblog) controller
-class PostsController < ActionController::Base
+class BlogPostsController < ActionController::Base
 
   before_filter :fix_view_paths
 
@@ -21,7 +21,7 @@ class PostsController < ActionController::Base
   
   def show
     # Sample blog post
-    render :template => "posts/show"
+    render :template => "blog_posts/show"
   end
   
   def different_formats
@@ -35,14 +35,20 @@ class PostsController < ActionController::Base
     render :nothing => true
   end
   
+  # Partial template, but stored within this controller
   def footer_partial
     render :partial => "footer"
+  end
+  
+  # Partial that is shared across controllers
+  def header_partial
+    render :partial => "shared/header"
   end
   
   protected
   
   def fix_view_paths
-    # Append the view path to get the correct views
+    # Append the view path to get the correct views/partials 
     self.append_view_path("#{File.dirname(__FILE__)}/fixtures/")
   end
   
@@ -63,21 +69,23 @@ class I18nExtensionsTest < ActiveSupport::TestCase
     I18n.backend = I18n::Backend::Simple.new
     
     # Store test text
-    I18n.backend.store_translations 'en', :posts => {:index => {:title => "My Blog Posts" } }
-    I18n.backend.store_translations 'en', :posts => {:index => {:intro => "Welcome to the blog of {{owner}}" } }
+    I18n.backend.store_translations 'en', :blog_posts => {:index => {:title => "My Blog Posts" } }
+    I18n.backend.store_translations 'en', :blog_posts => {:index => {:intro => "Welcome to the blog of {{owner}}" } }
     
     # Sample post
-    I18n.backend.store_translations 'en', :posts => {:show => {:title => "Catz Are Cute" } }
-    I18n.backend.store_translations 'en', :posts => {:show => {:body => "My cat {{name}} is the most awesome" } }
+    I18n.backend.store_translations 'en', :blog_posts => {:show => {:title => "Catz Are Cute" } }
+    I18n.backend.store_translations 'en', :blog_posts => {:show => {:body => "My cat {{name}} is the most awesome" } }
     
     # Fully qualified key
     I18n.backend.store_translations 'en', :header => {:author => {:name => "Ricky Rails" } }
     
     # Footer partial strings
-    I18n.backend.store_translations 'en', :posts => {:footer => {:copyright => "Copyright 2009" } }
+    I18n.backend.store_translations 'en', :blog_posts => {:footer => {:copyright => "Copyright 2009" } }
+    # Header partial strings
+    I18n.backend.store_translations 'en', :shared => {:header => {:blog_name => "Ricky Rocks Rails" } }
     
     # Set up test env
-    @controller = PostsController.new
+    @controller = BlogPostsController.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
     super
@@ -91,8 +99,8 @@ class I18nExtensionsTest < ActiveSupport::TestCase
     assert_response :success
     assert_not_nil assigns
     # Test that controller could translate
-    assert_equal I18n.t('posts.index.title'), assigns(:page_title)
-    assert_equal I18n.translate('posts.index.intro', :owner => "Ricky Rails"), assigns(:body)
+    assert_equal I18n.t('blog_posts.index.title'), assigns(:page_title)
+    assert_equal I18n.translate('blog_posts.index.intro', :owner => "Ricky Rails"), assigns(:body)
   end
   
   # Test that if something that breaks convention is still processed correctly
@@ -126,8 +134,8 @@ class I18nExtensionsTest < ActiveSupport::TestCase
   def test_view_show
     get :show
     assert_response :success
-    post_title = I18n.translate('posts.show.title')
-    post_body = I18n.t('posts.show.body', :name => 'hobbes') # matches show.erb
+    post_title = I18n.translate('blog_posts.show.title')
+    post_body = I18n.t('blog_posts.show.body', :name => 'hobbes') # matches show.erb
 
     assert_match /#{post_title}/, @response.body
     assert_match /#{post_body}/, @response.body
@@ -138,8 +146,16 @@ class I18nExtensionsTest < ActiveSupport::TestCase
     get :footer_partial
     assert_response :success
     
-    footer = I18n.t('posts.footer.copyright')
+    footer = I18n.t('blog_posts.footer.copyright')
     assert_match /#{footer}/, @response.body
+  end
+  
+  def test_header_partial
+    get :header_partial
+    assert_response :success
+    
+    blog_name = I18n.t('shared.header.blog_name')
+    assert_match /#{blog_name}/, @response.body
   end
     
 end
