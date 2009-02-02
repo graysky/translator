@@ -57,10 +57,14 @@ end
 class ActionView::Base
   def translate_with_defaults(key, options={})
     # TODO Handle:
-    # - partials associated with single controllers
     # - shared partials
     #
     scope = self.template.name
+    
+    # Check if it is a partial, meaning it starts with an underscore
+    if scope.index("_") == 0
+      scope.sub!(/^_/,'')
+    end
 
     I18nExtensions.translate_with_scope(self.controller_name, scope, key, options)
   end

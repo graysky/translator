@@ -1,11 +1,52 @@
 require 'test/unit'
-require 'test_helper'
+require File.dirname(__FILE__) + '/../../../../test/test_helper'
 require 'action_controller'
 require 'action_controller/test_process'
 require 'pp'
 
 require File.dirname(__FILE__) + '/../init'
 RAILS_ENV  = "test"
+
+# Stub a blog Posts (weblog) controller
+class PostsController < ActionController::Base
+
+  before_filter :fix_view_paths
+
+  def index
+    # Pull out sample strings for index to the fake blog
+    @page_title = t('title')
+    @body = translate(:intro, :owner => "Ricky Rails")
+    render :nothing => true, :layout => false
+  end
+  
+  def show
+    # Sample blog post
+    render :template => "posts/show"
+  end
+  
+  def different_formats
+    # Get the same tagline using the different formats
+    @taglines = []
+    @taglines << t('header.author.name') # dot-sep keys
+    @taglines << t('author.name', :scope => :header) # dot-sep keys with scope
+    @taglines << t('name', :scope => 'header.author') # string key with dot-sep scope
+    @taglines << t(:name, :scope => 'header.author') # symbol key with dot-sep score
+    @taglines << t(:name, :scope => %w(header author))
+    render :nothing => true
+  end
+  
+  def footer_partial
+    render :partial => "footer"
+  end
+  
+  protected
+  
+  def fix_view_paths
+    # Append the view path to get the correct views
+    self.append_view_path("#{File.dirname(__FILE__)}/fixtures/")
+  end
+  
+end
 
 # Set up simple routing for testing
 ActionController::Routing::Routes.reload rescue nil
@@ -15,44 +56,7 @@ end
 
 class I18nExtensionsTest < ActiveSupport::TestCase
 
-  # Stub a blog Posts (weblog) controller
-  class PostsController < ActionController::Base
-
-    # Set up view template directories
-    if respond_to? :view_paths=
-      self.view_paths = [ "#{File.dirname(__FILE__)}/fixtures/" ]
-    else
-      self.template_root = [ "#{File.dirname(__FILE__)}/fixtures/" ]
-    end
-
-    def index
-      # Pull out sample strings for index to the fake blog
-      @page_title = t('title')
-      @body = translate(:intro, :owner => "Ricky Rails")
-      render :nothing => true, :layout => false
-    end
-    
-    def show
-      # Sample blog post
-      render :template => "show"
-    end
-    
-    def different_formats
-      # Get the same tagline using the different formats
-      @taglines = []
-      @taglines << t('header.author.name') # dot-sep keys
-      @taglines << t('author.name', :scope => :header) # dot-sep keys with scope
-      @taglines << t('name', :scope => 'header.author') # string key with dot-sep scope
-      @taglines << t(:name, :scope => 'header.author') # symbol key with dot-sep score
-      @taglines << t(:name, :scope => %w(header author))
-      render :nothing => true
-    end
-    
-    def footer_partial
-      render :partial => "shared/footer"
-    end
-    
-  end
+  ### Test methods
 
   def setup
     # Create test locale bundle
