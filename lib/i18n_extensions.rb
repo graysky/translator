@@ -58,8 +58,11 @@ class ActionView::Base
   def translate_with_defaults(key, options={})
     # TODO Handle partials, etc.
     
+    scope = self.template.name
+
     
-    I18nExtensions.translate_with_scope(self.controller_name, self.template.name, key, options)
+    
+    I18nExtensions.translate_with_scope(self.controller_name, scope, key, options)
   end
   
   alias_method_chain :translate, :defaults

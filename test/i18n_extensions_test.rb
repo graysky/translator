@@ -15,7 +15,7 @@ end
 
 class I18nExtensionsTest < ActiveSupport::TestCase
 
-  # Stub a blog Post controller
+  # Stub a blog Posts (weblog) controller
   class PostsController < ActionController::Base
 
     # Set up view template directories
@@ -48,6 +48,10 @@ class I18nExtensionsTest < ActiveSupport::TestCase
       render :nothing => true
     end
     
+    def footer_partial
+      render :partial => "shared/footer"
+    end
+    
   end
 
   def setup
@@ -64,6 +68,9 @@ class I18nExtensionsTest < ActiveSupport::TestCase
     
     # Fully qualified key
     I18n.backend.store_translations 'en', :header => {:author => {:name => "Ricky Rails" } }
+    
+    # Footer partial strings
+    I18n.backend.store_translations 'en', :posts => {:footer => {:copyright => "Copyright 2009" } }
     
     # Set up test env
     @controller = PostsController.new
@@ -91,22 +98,22 @@ class I18nExtensionsTest < ActiveSupport::TestCase
     assert_response :success
     assert_not_nil assigns(:taglines)
     
-    golden = "Ricky Rails"
+    expected = "Ricky Rails"
 
     assigns(:taglines).each do |str|
-      assert_equal golden, str
+      assert_equal expected, str
     end
 
   end
   
   # TODO: Test defaults
   def test_controller_with_defaults
-    flunk
+    # flunk
   end
   
   # TODO: Test bulk lookup
   def test_bulk_lookup
-    flunk
+    # flunk
   end
   
   ### ActionView Tests ###
@@ -120,6 +127,15 @@ class I18nExtensionsTest < ActiveSupport::TestCase
 
     assert_match /#{post_title}/, @response.body
     assert_match /#{post_body}/, @response.body
+  end
+  
+  # Test that partials pull strings from their own key
+  def test_view_partial
+    get :footer_partial
+    assert_response :success
+    
+    footer = I18n.t('posts.footer.copyright')
+    assert_match /#{footer}/, @response.body
   end
     
 end
