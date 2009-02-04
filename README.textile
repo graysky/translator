@@ -6,14 +6,16 @@ h3. Example
 
 By sticking to a convention of locale key hierarchy like:
 
-@
+<pre>
+<code>
 en:
   posts: # controller
     index: # action
       title: "My Blog Posts"
     show:
       byline: "Written by {{name}}"
-@
+</code>
+</pre>
 
 calls in controllers and views become @t('title')@ and the context is inferred.
 
@@ -21,8 +23,10 @@ h3. Benefits
 
 Simple @translate@ (or @t@) method added to:
 
-- ActionController
-- ActionView
+* ActionController
+* ActionView
+* ActiveRecord (coming soon)
+* Test Helper (coming soon)
 
 h3. RDoc API
 
