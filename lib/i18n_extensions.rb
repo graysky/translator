@@ -10,38 +10,62 @@ module I18nExtensions
 
   # TODO: Handle:
   # - layout (layout_name:key)
-  # - shared keys within a controller (like flash messages or from protected methods)
-  # - defaults (may have to pull them out for first attempt)
   #
-  def self.translate_with_scope(controller, action, key, options={})
+  def self.translate_with_scope(scope, key, options={})
     # Keep the original options clean
-    
-    RAILS_DEFAULT_LOGGER.debug { "key: #{key}" }
-    
     scoped_options = {}.merge(options)
     
-    # Get the original scoping
     # From RDoc: 
     # Scope can be either a single key, a dot-separated key or an array of keys or dot-separated keys
-    scope = []
     
-    # Build up the scope
-    scope.insert(0, controller.to_sym)
-    scope.insert(1, action.to_sym)
+    scope ||= [] # guard against nil scope
+    RAILS_DEFAULT_LOGGER.debug { "key: #{key} scope: #{scope.to_s} options: #{options.to_s}" }
+    
+    # Convert the scopes to list of symbols and ignore anything
+    # that cannot be converted
+    scope.map! do |e| 
+      if e.respond_to?(:to_sym)
+        e.to_sym
+      else
+        nil
+      end
+    end
+    
+    scope.compact! # clear any nil values
     
     # Raise to know if the key was found
     scoped_options[:raise] = true
     
-    # Merge the scope
-    scoped_options[:scope] = scope
+    # Remove any default value when searching with scope
+    scoped_options.delete(:default)
     
-    begin
-      # try with scope
-      I18n.translate(key, scoped_options)
-    rescue I18n::MissingTranslationData => exc
-      # Fall back to trying original
-      I18n.translate(key, options)
+    str = nil # the string being looked for
+    
+    # Loop through each scope until a string is found.
+    # Example: starts with scope of [:blog_posts :show] then tries scope [:blog_posts]
+    #
+    while !scope.empty? && str.nil?
+    
+      # Set scope to use for search
+      scoped_options[:scope] = scope
+    
+      RAILS_DEFAULT_LOGGER.debug { "searching key: #{key} scope: #{scope.to_s}" }
+    
+      begin
+        # try to find key within scope
+        str = I18n.translate(key, scoped_options)
+      rescue I18n::MissingTranslationData => exc
+        # did not find the string, remove a layer of scoping (if possible)
+        scope.pop
+      end
     end
+    
+    if str.nil?
+      # Didn't find a string yet, so fall back to trying original request
+      str = I18n.translate(key, options)
+    end
+    
+    str
   end
   
 end
@@ -61,7 +85,7 @@ class ActionView::Base
     # Partials template names start with underscore, which should be removed
     inner_scope.sub!(/^_/, '')
 
-    I18nExtensions.translate_with_scope(outer_scope, inner_scope, key, options)
+    I18nExtensions.translate_with_scope([outer_scope, inner_scope], key, options)
   end
   
   alias_method_chain :translate, :context
@@ -75,7 +99,7 @@ module ActionController
     
     # Add scoping of controller_name and action_name to the call to +translate+
     def translate_with_context(key, options={})
-      I18nExtensions.translate_with_scope(self.controller_name, self.action_name, key, options)
+      I18nExtensions.translate_with_scope([self.controller_name, self.action_name], key, options)
     end
     
     alias_method_chain :translate, :context
@@ -83,7 +107,13 @@ module ActionController
   end
 end
 
-# TODO Add test helpers
+# TODO Add test helpers to make testing translations simple. Ideas:
+# - iterate through available locales for each action and test that there is no missing translations
+# - no missing translations for the current test suite
+
+# TODO Add "psuedo-translate" mode that is:
+# - more whiny when keys not found
+# - prepends/appends strings to make it easier to see untranslated ones
 
 # TODO Add to ActionMailer
 #class ActionMailer::Base

@@ -5,12 +5,16 @@ require 'action_controller/test_process'
 require 'pp'
 
 require File.dirname(__FILE__) + '/../init'
-RAILS_ENV  = "test"
+RAILS_ENV  = "test" unless defined? RAILS_ENV
 
 # Stub a blog Posts (weblog) controller
 class BlogPostsController < ActionController::Base
-
+  
+  # Sets up view paths so tests will work
   before_filter :fix_view_paths
+
+  # Simulate auth filter
+  before_filter :authorize, :only => [:admin]
 
   def index
     # Pull out sample strings for index to the fake blog
@@ -44,8 +48,25 @@ class BlogPostsController < ActionController::Base
   def header_partial
     render :partial => "shared/header"
   end
+
+  def admin
+    # Simulate an admin page that has a protection scheme
+  end
+  
+  def default_value
+    # Get a default value if the string isn't there
+    @title = t('not_there', :default => 'the default')
+    render :nothing => true
+  end
   
   protected
+  
+  # Simulate an auth system that prevents login
+  def authorize
+    # set a flash with a common message
+    flash[:error] = t('flash.invalid_login')
+    redirect_to :action => :index
+  end
   
   def fix_view_paths
     # Append the view path to get the correct views/partials 
@@ -79,10 +100,15 @@ class I18nExtensionsTest < ActiveSupport::TestCase
     # Fully qualified key
     I18n.backend.store_translations 'en', :header => {:author => {:name => "Ricky Rails" } }
     
+    # Flash messages not specific to 1 action, but within 1 controller
+    I18n.backend.store_translations 'en', :blog_posts => {:flash => {:invalid_login => "Invalid session" } }
+    
     # Footer partial strings
     I18n.backend.store_translations 'en', :blog_posts => {:footer => {:copyright => "Copyright 2009" } }
     # Header partial strings
     I18n.backend.store_translations 'en', :shared => {:header => {:blog_name => "Ricky Rocks Rails" } }
+    
+    # Fake default
     
     # Set up test env
     @controller = BlogPostsController.new
@@ -91,7 +117,7 @@ class I18nExtensionsTest < ActiveSupport::TestCase
     super
   end
   
-  ### ActionController Tests ###
+  ### ActionController Tests
   
   # Test that translate gets typical controller scoping
   def test_controller_simple
@@ -118,9 +144,14 @@ class I18nExtensionsTest < ActiveSupport::TestCase
 
   end
   
-  # TODO: Test defaults
+  # Test call to translate with default value
   def test_controller_with_defaults
-    # flunk
+    get :default_value
+    assert_response :success
+    assert_not_nil assigns(:title)
+    
+    # TODO: Need better way to check that the default was only returned as last resort.
+    assert_equal 'the default', assigns(:title)
   end
   
   # TODO: Test bulk lookup
@@ -128,7 +159,17 @@ class I18nExtensionsTest < ActiveSupport::TestCase
     # flunk
   end
   
-  ### ActionView Tests ###
+  # Test that first the most specific scope will be tried (controller.action) then
+  # back off to just the outer scope (controller)
+  def test_controller_shared_messages
+    get :admin
+    assert_response :redirect
+    
+    # Test that t should have tried the outer scope
+    assert_equal I18n.t('blog_posts.flash.invalid_login'), flash[:error]
+  end
+  
+  ### ActionView Tests
   
   # Test that translate works in Views
   def test_view_show
