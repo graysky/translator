@@ -1,21 +1,29 @@
-I18nExtensions
-==============
+h2. I18n Extensions
 
 I18n Extensions make using the internationalization (i18n) facility introduced in Rails 2.2 simpler by keeping your code DRY.
 
-Example
-=======
+h3. Example
 
 By sticking to a convention of locale key hierarchy like:
 
+@
 en:
   posts: # controller
     index: # action
       title: "My Blog Posts"
     show:
       byline: "Written by {{name}}"
-      
+@
 
+calls in controllers and views become @t('title')@ and the context is inferred.
 
+h3. Benefits
+
+Simple @translate@ (or @t@) method added to:
+
+- ActionController
+- ActionView
+
+h3. RDoc API
 
 Copyright (c) 2009 Mike Champion, released under the MIT license
