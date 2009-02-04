@@ -1,6 +1,6 @@
-h2. I18n Extensions
+h2. i18n Extensions for Rails
 
-I18n Extensions make using the internationalization (i18n) facility introduced in Rails 2.2 simpler by keeping your code DRY.
+i18n Extensions make using the internationalization (i18n) facility introduced in Rails 2.2 simpler by keeping your code DRY.
 
 h3. Example
 
