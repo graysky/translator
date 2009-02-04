@@ -2,10 +2,20 @@ require 'test/unit'
 require File.dirname(__FILE__) + '/../../../../test/test_helper'
 require 'action_controller'
 require 'action_controller/test_process'
+require 'action_mailer'
 require 'pp'
 
 require File.dirname(__FILE__) + '/../init'
 RAILS_ENV  = "test" unless defined? RAILS_ENV
+
+class BlogCommentMailer < ActionMailer::Base
+  
+  def comment_notification
+    @subject = t('subject')
+  end
+end
+
+BlogCommentMailer.template_root = "#{File.dirname(__FILE__)}/fixtures/"
 
 # Stub a blog Posts (weblog) controller
 class BlogPostsController < ActionController::Base
@@ -108,7 +118,8 @@ class I18nExtensionsTest < ActiveSupport::TestCase
     # Header partial strings
     I18n.backend.store_translations 'en', :shared => {:header => {:blog_name => "Ricky Rocks Rails" } }
     
-    # Fake default
+    # Strings for ActionMailer test
+    I18n.backend.store_translations 'en', :blog_comment_mailer => {:comment_notification => {:subject => "New Comment Notification" } }
     
     # Set up test env
     @controller = BlogPostsController.new
@@ -197,6 +208,14 @@ class I18nExtensionsTest < ActiveSupport::TestCase
     
     blog_name = I18n.t('shared.header.blog_name')
     assert_match /#{blog_name}/, @response.body
+  end
+  
+  ### ActionMailer Tests
+  
+  def test_mailer    
+    mail = BlogCommentMailer.create_comment_notification
+    subject = I18n.t('blog_comment_mailer.comment_notification.subject')
+    assert_match /#{subject}/, mail.body
   end
     
 end

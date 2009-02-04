@@ -25,6 +25,7 @@ Simple @translate@ (or @t@) method added to:
 
 * ActionController
 * ActionView
+* ActionMailer
 * ActiveRecord (coming soon)
 * Test Helper (coming soon)
 

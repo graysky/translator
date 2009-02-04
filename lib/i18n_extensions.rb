@@ -115,7 +115,13 @@ end
 # - more whiny when keys not found
 # - prepends/appends strings to make it easier to see untranslated ones
 
-# TODO Add to ActionMailer
-#class ActionMailer::Base
-#  include AsyncMailer
-#end
+# Add to ActionMailer
+class ActionMailer::Base
+  # Add scoping of mailer_name and action_name to the call to +translate+
+  def translate(key, options={})
+    I18nExtensions.translate_with_scope([self.mailer_name, self.action_name], key, options)
+  end
+  
+  #alias_method_chain :translate, :context
+  alias :t :translate
+end
