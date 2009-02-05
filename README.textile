@@ -1,34 +1,44 @@
 h2. Translator - i18n tooling for Rails
 
-Translator make using the internationalization (i18n) facility introduced in Rails 2.2 simpler by keeping your code DRY.
+Translator make using the internationalization (i18n) facility introduced in Rails 2.2 simpler by keeping your code DRY through simple conventions.
+
+h3. The Problem
+
+The (very!) helpful "I18n":http://api.rubyonrails.org/classes/I18n.html library finds keys in locale bundles, but doesn't know anything about Rails application layouts (models/views/controllers/mailers). For Rails apps that have a lot of strings, this can lead to un-DRY code.  
+
+Translator defines a convention for the hierarchy of keys within locale bundles. When looking up a key for translation it infers a context for the request. This can make the code simpler to read, while still using the handy I18n library.
 
 h3. Example
 
-By sticking to a convention of locale key hierarchy like:
+Assuming a locale YAML file for English strings that looks like:
 
 <pre>
 <code>
 en:
-  posts: # controller
-    index: # action
+  blog_posts: # controller
+    show: # action
       title: "My Blog Posts"
-    show:
-      byline: "Written by {{name}}"
+      byline: "Posted by {{author}}"
 </code>
 </pre>
 
-calls in controllers and views become @t('title')@ and the context is inferred.
+Without Translator in the @BlogPostsController.show@ action or @show.erb@ template, to pull up the title string would be @I18n.translate('blog_posts.show.title')@. Translator knows the context so it can simply be @t('title')@.
 
-h3. Benefits
+h3. Features
 
 Simple @translate@ (or @t@) method added to:
 
 * ActionController
 * ActionView
 * ActionMailer
-* ActiveRecord (coming soon)
-* Test Helper (coming soon)
 
-h3. RDoc API
+*TODO* Describe backoff scoping
+
+*TODO* More examples
+
+h3. RDoc API (coming soon)
+
+
+Bug reports welcome. Patches very welcome.
 
 Copyright (c) 2009 "Mike Champion":http://graysky.org, released under the MIT license
