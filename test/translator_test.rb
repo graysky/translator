@@ -91,7 +91,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect ':controller/:action/:id'
 end
 
-class I18nExtensionsTest < ActiveSupport::TestCase
+class TranslatorTest < ActiveSupport::TestCase
 
   ### Test methods
 

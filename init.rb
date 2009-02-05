@@ -1,1 +1,1 @@
-require 'i18n_extensions'
+require 'translator'

@@ -1,6 +1,6 @@
-h2. i18n Extensions for Rails
+h2. Translator - i18n tooling for Rails
 
-i18n Extensions make using the internationalization (i18n) facility introduced in Rails 2.2 simpler by keeping your code DRY.
+Translator make using the internationalization (i18n) facility introduced in Rails 2.2 simpler by keeping your code DRY.
 
 h3. Example
 
@@ -31,4 +31,4 @@ Simple @translate@ (or @t@) method added to:
 
 h3. RDoc API
 
-Copyright (c) 2009 Mike Champion, released under the MIT license
+Copyright (c) 2009 "Mike Champion":http://graysky.org, released under the MIT license

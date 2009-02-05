@@ -5,8 +5,8 @@ require 'action_view/helpers/translation_helper'
 # 1. Support the method +translate+ (or +t+) in Rails models/view/controllers.
 # 2. Promote keeping DRY through convention for key hierarchy (TODO: Describe convention)
 #
-module I18nExtensions
-  VERSION = '0.1.0'
+module Translator
+  VERSION = '0.3.0'
 
   # TODO: Handle:
   # - layout (layout_name:key)
@@ -85,7 +85,7 @@ class ActionView::Base
     # Partials template names start with underscore, which should be removed
     inner_scope.sub!(/^_/, '')
 
-    I18nExtensions.translate_with_scope([outer_scope, inner_scope], key, options)
+    Translator.translate_with_scope([outer_scope, inner_scope], key, options)
   end
   
   alias_method_chain :translate, :context
@@ -99,7 +99,7 @@ module ActionController
     
     # Add scoping of controller_name and action_name to the call to +translate+
     def translate_with_context(key, options={})
-      I18nExtensions.translate_with_scope([self.controller_name, self.action_name], key, options)
+      Translator.translate_with_scope([self.controller_name, self.action_name], key, options)
     end
     
     alias_method_chain :translate, :context
@@ -119,7 +119,7 @@ end
 class ActionMailer::Base
   # Add scoping of mailer_name and action_name to the call to +translate+
   def translate(key, options={})
-    I18nExtensions.translate_with_scope([self.mailer_name, self.action_name], key, options)
+    Translator.translate_with_scope([self.mailer_name, self.action_name], key, options)
   end
   
   #alias_method_chain :translate, :context
