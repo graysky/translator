@@ -85,9 +85,10 @@ module Translator
   
 end
 
-# Redefine the +translate+ method in ActionView (contributed by TranslationHelper) that is
-# context-aware of what view is being rendered. Will try scoping key requests to [:controller_name :view_name]
 class ActionView::Base
+  # Redefine the +translate+ method in ActionView (contributed by TranslationHelper) that is
+  # context-aware of what view (or partial) is being rendered. 
+  # Initial scoping will be scoped to [:controller_name :view_name]
   def translate_with_context(key, options={})
 
     # The outer scope will typically be the controller name ("blog_posts")
@@ -107,12 +108,12 @@ class ActionView::Base
   alias :t :translate
 end
 
-# Add a +translate+ (or +t+) method to ActionController that is context-aware of what controller and action
-# is being invoked. Will automatically add scoping of [:controller_name :action_name] to calls to translate.
 module ActionController
   class Base
     
-    # Add scoping of controller_name and action_name to the call to +translate+
+    # Add a +translate+ (or +t+) method to ActionController that is context-aware of what controller and action
+    # is being invoked. Initial scoping will be [:controller_name :action_name] when looking up keys. Example would be
+    # +['posts' 'show']+ for the +PostsController+ and +show+ action.
     def translate_with_context(key, options={})
       Translator.translate_with_scope([self.controller_name, self.action_name], key, options)
     end
@@ -125,8 +126,9 @@ end
 # Add translate method to ActionMailer
 class ActionMailer::Base
 
-  # Add scoping of mailer_name (ex: 'comment_mailer') and action_name (ex: 'comment_notification') 
-  # to the call to +translate+
+  # Add a +translate+ (or +t+) method to ActionMailer that is context-aware of what mailer and action
+  # is being invoked. Initial scoping of [:mailer_name :action_name] where mailer_name is like 'comment_mailer' 
+  # and action_name is 'comment_notification' (note: no "deliver_" or "create_")
   def translate(key, options={})
     Translator.translate_with_scope([self.mailer_name, self.action_name], key, options)
   end
