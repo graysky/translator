@@ -90,7 +90,6 @@ class ActionView::Base
   # context-aware of what view (or partial) is being rendered. 
   # Initial scoping will be scoped to [:controller_name :view_name]
   def translate_with_context(key, options={})
-
     # The outer scope will typically be the controller name ("blog_posts")
     # but can also be a dir of shared partials ("shared").
     outer_scope = self.template.base_path
@@ -123,7 +122,6 @@ module ActionController
   end
 end
 
-# Add translate method to ActionMailer
 class ActionMailer::Base
 
   # Add a +translate+ (or +t+) method to ActionMailer that is context-aware of what mailer and action

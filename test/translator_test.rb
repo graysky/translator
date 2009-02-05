@@ -120,6 +120,7 @@ class TranslatorTest < ActiveSupport::TestCase
     
     # Strings for ActionMailer test
     I18n.backend.store_translations 'en', :blog_comment_mailer => {:comment_notification => {:subject => "New Comment Notification" } }
+    I18n.backend.store_translations 'en', :blog_comment_mailer => {:comment_notification => {:signoff => "Your Faithful Emailing Bot" } }
     
     # Set up test env
     @controller = BlogPostsController.new
@@ -214,8 +215,14 @@ class TranslatorTest < ActiveSupport::TestCase
   
   def test_mailer    
     mail = BlogCommentMailer.create_comment_notification
+    # Subject is fetched from the mailer action
     subject = I18n.t('blog_comment_mailer.comment_notification.subject')
+    
+    # Signoff is fetched in the mail template (via addition to ActionView)
+    signoff = I18n.t('blog_comment_mailer.comment_notification.signoff')
+    
     assert_match /#{subject}/, mail.body
+    assert_match /#{signoff}/, mail.body
   end
     
 end
