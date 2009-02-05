@@ -6,6 +6,8 @@ List of things todo:
 
 - Add methods to ActiveRecord
 
+- Strict mode? Catch accidental requests that would return hash of keys instead of string (usually unintended?)
+
 - Split up different parts into diff. tests / code for each part of MVC & mailers
 
 - How to make testing simpler?
