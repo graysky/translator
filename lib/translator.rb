@@ -107,19 +107,28 @@ class ActionView::Base
   alias :t :translate
 end
 
-module ActionController
-  class Base
+class ActionController::Base
     
-    # Add a +translate+ (or +t+) method to ActionController that is context-aware of what controller and action
-    # is being invoked. Initial scoping will be [:controller_name :action_name] when looking up keys. Example would be
-    # +['posts' 'show']+ for the +PostsController+ and +show+ action.
-    def translate_with_context(key, options={})
-      Translator.translate_with_scope([self.controller_name, self.action_name], key, options)
-    end
-    
-    alias_method_chain :translate, :context
-    alias :t :translate
+  # Add a +translate+ (or +t+) method to ActionController that is context-aware of what controller and action
+  # is being invoked. Initial scoping will be [:controller_name :action_name] when looking up keys. Example would be
+  # +['posts' 'show']+ for the +PostsController+ and +show+ action.
+  def translate_with_context(key, options={})
+    Translator.translate_with_scope([self.controller_name, self.action_name], key, options)
   end
+  
+  alias_method_chain :translate, :context
+  alias :t :translate
+
+end
+
+class ActiveRecord::Base
+  # Add a +translate+ (or +t+) method to ActiveRecord that is context-aware of what model is being invoked. 
+  # Initial scoping of [:model_name] where model name is like 'blog_post' (singular - *not* the table name) 
+  def translate(key, options={})
+    Translator.translate_with_scope([self.class.name.underscore], key, options)
+  end
+  
+  alias :t :translate  
 end
 
 class ActionMailer::Base

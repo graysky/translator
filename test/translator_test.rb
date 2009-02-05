@@ -1,15 +1,20 @@
-require 'test/unit'
-require File.dirname(__FILE__) + '/../../../../test/test_helper'
-require 'action_controller'
-require 'action_controller/test_process'
-require 'action_mailer'
-require 'pp'
+require 'test_helper'
 
-require File.dirname(__FILE__) + '/../init'
-RAILS_ENV  = "test" unless defined? RAILS_ENV
+# Model of a blog post, defined in schema.rb
+class BlogPost < ActiveRecord::Base
+  # Has a title, author and body
+  
+  def written_by
+    # Get sting like "Written by Ricky"
+    t('byline', :author => self.author)
+  end
+  
+end
 
+# A mailer for new comments on the fake blog
 class BlogCommentMailer < ActionMailer::Base
   
+  # Send email about new comments
   def comment_notification
     @subject = t('subject')
   end
@@ -17,7 +22,7 @@ end
 
 BlogCommentMailer.template_root = "#{File.dirname(__FILE__)}/fixtures/"
 
-# Stub a blog Posts (weblog) controller
+# Stub a Blog Posts controller
 class BlogPostsController < ActionController::Base
   
   # Sets up view paths so tests will work
@@ -99,7 +104,7 @@ class TranslatorTest < ActiveSupport::TestCase
     # Create test locale bundle
     I18n.backend = I18n::Backend::Simple.new
     
-    # Store test text
+    ## Strings for Controllers/Views
     I18n.backend.store_translations 'en', :blog_posts => {:index => {:title => "My Blog Posts" } }
     I18n.backend.store_translations 'en', :blog_posts => {:index => {:intro => "Welcome to the blog of {{owner}}" } }
     
@@ -117,6 +122,9 @@ class TranslatorTest < ActiveSupport::TestCase
     I18n.backend.store_translations 'en', :blog_posts => {:footer => {:copyright => "Copyright 2009" } }
     # Header partial strings
     I18n.backend.store_translations 'en', :shared => {:header => {:blog_name => "Ricky Rocks Rails" } }
+    
+    # Strings for ActiveRecord test - convention is :model_name :method_name?
+    I18n.backend.store_translations 'en', :blog_post => {:byline => "Written by {{author}}" }
     
     # Strings for ActionMailer test
     I18n.backend.store_translations 'en', :blog_comment_mailer => {:comment_notification => {:subject => "New Comment Notification" } }
@@ -223,6 +231,21 @@ class TranslatorTest < ActiveSupport::TestCase
     
     assert_match /#{subject}/, mail.body
     assert_match /#{signoff}/, mail.body
+  end
+   
+  ### ActiveRecord tests
+  
+  # Test that a model's method can call translate
+  def test_model_calling_translate
+    
+    post = nil
+    author = "Ricky"
+    assert_nothing_raised do
+      post = BlogPost.create(:title => "First Post!", :body => "Starting my new blog about RoR", :author => author)
+    end
+    assert_not_nil post
+    
+    assert_equal I18n.t('blog_post.byline', :author => author), post.written_by
   end
     
 end

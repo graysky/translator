@@ -30,6 +30,7 @@ Simple @translate@ (or @t@) method added to:
 
 * ActionController
 * ActionView
+* ActiveRecord
 * ActionMailer
 
 *TODO* Describe backoff scoping
