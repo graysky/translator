@@ -1,0 +1,15 @@
+List of things todo:
+
+- Confirm translate works for strings in layouts work
+
+- Confirm that translate works for strings in helpers
+
+- Add methods to ActiveRecord
+
+- Split up different parts into diff. tests / code for each part of MVC & mailers
+
+- How to make testing simpler?
+
+- Pseudo-translating tool. If enabled, override default behavior to:
+-- raise exception on missing translation
+-- prepend/append markers to confirm that strings are externalized

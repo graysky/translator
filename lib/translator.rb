@@ -1,15 +1,30 @@
 require 'active_support'
 require 'action_view/helpers/translation_helper'
 
-# Extentions to make internationalization (i18n) of a Rails application simpler. Features include :
-# 1. Support the method +translate+ (or +t+) in Rails models/view/controllers.
-# 2. Promote keeping DRY through convention for key hierarchy (TODO: Describe convention)
+# Extentions to make internationalization (i18n) of a Rails application simpler. 
+# Support the method +translate+ (or shorter +t+) in models/view/controllers/mailers.
 #
 module Translator
   VERSION = '0.3.0'
 
-  # TODO: Handle:
-  # - layout (layout_name:key)
+  # Performs lookup with a given scope. The scope should be an array of strings or symbols
+  # ordered from highest to lowest scoping. For example, for a given PicturesController 
+  # with an action "show" the scope should be ['pictures', 'show'] which happens automatically.
+  #
+  # The key and options parameters follow the same rules as the I18n library (they are passed through).
+  # 
+  # The search order is from most specific scope to most general (and then using a default value, if provided).
+  # So continuing the previous example, if the key was "title" and options included :default => 'Some Picture'
+  # then it would continue searching until it found a value for:
+  # * pictures.show.title
+  # * pictures.title
+  # * title
+  # * use the default value (if provided)
+  #
+  # The key itself can contain a scope. For example, if there were a set of shared error messages within the 
+  # Pictures controller, that could be found using a key like "errors.deleted_picture". The inital search with
+  # narrowest scope ('pictures.show.errors.deleted_picture') will not find a value, but the subsequent search with
+  # broader scope ('pictures.errors.deleted_picture') will find the string.
   #
   def self.translate_with_scope(scope, key, options={})
     # Keep the original options clean
@@ -107,21 +122,14 @@ module ActionController
   end
 end
 
-# TODO Add test helpers to make testing translations simple. Ideas:
-# - iterate through available locales for each action and test that there is no missing translations
-# - no missing translations for the current test suite
-
-# TODO Add "psuedo-translate" mode that is:
-# - more whiny when keys not found
-# - prepends/appends strings to make it easier to see untranslated ones
-
-# Add to ActionMailer
+# Add translate method to ActionMailer
 class ActionMailer::Base
-  # Add scoping of mailer_name and action_name to the call to +translate+
+
+  # Add scoping of mailer_name (ex: 'comment_mailer') and action_name (ex: 'comment_notification') 
+  # to the call to +translate+
   def translate(key, options={})
     Translator.translate_with_scope([self.mailer_name, self.action_name], key, options)
   end
   
-  #alias_method_chain :translate, :context
   alias :t :translate
 end

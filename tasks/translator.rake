@@ -1,4 +1,4 @@
 # desc "Explaining what the task does"
-# task :i18n_extensions do
+# task :translator do
 #   # Task goes here
 # end
