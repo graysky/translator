@@ -36,7 +36,9 @@ Simple @translate@ (or @t@) method added to:
 
 *TODO* More examples
 
-h3. RDoc API (coming soon)
+h3. RDoc API
+
+"RDocs are online":http://graysky.github.com/translator/rdoc/index.html or can be generated via @rake rdoc@ in the translator directory.
 
 
 Bug reports welcome. Patches very welcome.
