@@ -100,7 +100,7 @@ module ActionView #:nodoc:
     
       # Partials template names start with underscore, which should be removed
       inner_scope.sub!(/^_/, '')
-
+      
       Translator.translate_with_scope([outer_scope, inner_scope], key, options)
     end
   

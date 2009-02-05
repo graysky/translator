@@ -31,6 +31,8 @@ class BlogPostsController < ActionController::Base
   # Simulate auth filter
   before_filter :authorize, :only => [:admin]
 
+  layout "blog_layout", :only => :show_with_layout
+
   def index
     # Pull out sample strings for index to the fake blog
     @page_title = t('title')
@@ -40,6 +42,11 @@ class BlogPostsController < ActionController::Base
   
   def show
     # Sample blog post
+    render :template => "blog_posts/show"
+  end
+  
+  # Render the show action with a layout
+  def show_with_layout
     render :template => "blog_posts/show"
   end
   
@@ -123,6 +130,9 @@ class TranslatorTest < ActiveSupport::TestCase
     # Header partial strings
     I18n.backend.store_translations 'en', :shared => {:header => {:blog_name => "Ricky Rocks Rails" } }
     
+    # Strings for layout
+    I18n.backend.store_translations 'en', :layouts => {:blog_layout => {:blog_title => "The Blog of Ricky" } }
+    
     # Strings for ActiveRecord test - convention is :model_name :method_name?
     I18n.backend.store_translations 'en', :blog_post => {:byline => "Written by {{author}}" }
     
@@ -200,6 +210,15 @@ class TranslatorTest < ActiveSupport::TestCase
 
     assert_match /#{post_title}/, @response.body
     assert_match /#{post_body}/, @response.body
+  end
+  
+  # Test that layouts can pull strings
+  def test_show_with_layout
+    get :show_with_layout
+    assert_response :success
+    
+    blog_title = I18n.t('layouts.blog_layout.blog_title')
+    assert_match /#{blog_title}/, @response.body
   end
   
   # Test that partials pull strings from their own key

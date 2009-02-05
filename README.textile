@@ -35,7 +35,13 @@ Simple @translate@ (or @t@) method added to:
 
 *TODO* Describe backoff scoping
 
-*TODO* More examples
+h3. Key Conventions
+
+*TODO* Describe the convention for: 
+* controllers
+* views (normal, layouts, partials)
+* models
+* mailers
 
 h3. RDoc API
 

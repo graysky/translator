@@ -1,7 +1,5 @@
 List of things todo:
 
-- Confirm translate works for strings in layouts work
-
 - Confirm that translate works for strings in helpers
 
 - Strict mode? Catch accidental requests that would return hash of keys instead of string (usually unintended?)
