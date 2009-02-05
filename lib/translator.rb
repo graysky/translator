@@ -85,60 +85,67 @@ module Translator
   
 end
 
-class ActionView::Base
-  # Redefine the +translate+ method in ActionView (contributed by TranslationHelper) that is
-  # context-aware of what view (or partial) is being rendered. 
-  # Initial scoping will be scoped to [:controller_name :view_name]
-  def translate_with_context(key, options={})
-    # The outer scope will typically be the controller name ("blog_posts")
-    # but can also be a dir of shared partials ("shared").
-    outer_scope = self.template.base_path
+module ActionView #:nodoc:
+  class Base
+    # Redefine the +translate+ method in ActionView (contributed by TranslationHelper) that is
+    # context-aware of what view (or partial) is being rendered. 
+    # Initial scoping will be scoped to [:controller_name :view_name]
+    def translate_with_context(key, options={})
+      # The outer scope will typically be the controller name ("blog_posts")
+      # but can also be a dir of shared partials ("shared").
+      outer_scope = self.template.base_path
     
-    # The template will be the view being rendered ("show.erb" or "_ad.erb")
-    inner_scope = self.template.name
+      # The template will be the view being rendered ("show.erb" or "_ad.erb")
+      inner_scope = self.template.name
     
-    # Partials template names start with underscore, which should be removed
-    inner_scope.sub!(/^_/, '')
+      # Partials template names start with underscore, which should be removed
+      inner_scope.sub!(/^_/, '')
 
-    Translator.translate_with_scope([outer_scope, inner_scope], key, options)
-  end
+      Translator.translate_with_scope([outer_scope, inner_scope], key, options)
+    end
   
-  alias_method_chain :translate, :context
-  alias :t :translate
+    alias_method_chain :translate, :context
+    alias :t :translate
+  end
 end
 
-class ActionController::Base
+module ActionController  #:nodoc:
+  class Base
     
-  # Add a +translate+ (or +t+) method to ActionController that is context-aware of what controller and action
-  # is being invoked. Initial scoping will be [:controller_name :action_name] when looking up keys. Example would be
-  # +['posts' 'show']+ for the +PostsController+ and +show+ action.
-  def translate_with_context(key, options={})
-    Translator.translate_with_scope([self.controller_name, self.action_name], key, options)
-  end
+    # Add a +translate+ (or +t+) method to ActionController that is context-aware of what controller and action
+    # is being invoked. Initial scoping will be [:controller_name :action_name] when looking up keys. Example would be
+    # +['posts' 'show']+ for the +PostsController+ and +show+ action.
+    def translate_with_context(key, options={})
+      Translator.translate_with_scope([self.controller_name, self.action_name], key, options)
+    end
   
-  alias_method_chain :translate, :context
-  alias :t :translate
-
+    alias_method_chain :translate, :context
+    alias :t :translate
+  end
 end
 
-class ActiveRecord::Base
-  # Add a +translate+ (or +t+) method to ActiveRecord that is context-aware of what model is being invoked. 
-  # Initial scoping of [:model_name] where model name is like 'blog_post' (singular - *not* the table name) 
-  def translate(key, options={})
-    Translator.translate_with_scope([self.class.name.underscore], key, options)
-  end
+module ActiveRecord #:nodoc:
+  class Base
+    # Add a +translate+ (or +t+) method to ActiveRecord that is context-aware of what model is being invoked. 
+    # Initial scoping of [:model_name] where model name is like 'blog_post' (singular - *not* the table name) 
+    def translate(key, options={})
+      Translator.translate_with_scope([self.class.name.underscore], key, options)
+    end
   
-  alias :t :translate  
+    alias :t :translate  
+  end
 end
 
-class ActionMailer::Base
+module ActionMailer #:nodoc:
+  class Base
 
-  # Add a +translate+ (or +t+) method to ActionMailer that is context-aware of what mailer and action
-  # is being invoked. Initial scoping of [:mailer_name :action_name] where mailer_name is like 'comment_mailer' 
-  # and action_name is 'comment_notification' (note: no "deliver_" or "create_")
-  def translate(key, options={})
-    Translator.translate_with_scope([self.mailer_name, self.action_name], key, options)
-  end
+    # Add a +translate+ (or +t+) method to ActionMailer that is context-aware of what mailer and action
+    # is being invoked. Initial scoping of [:mailer_name :action_name] where mailer_name is like 'comment_mailer' 
+    # and action_name is 'comment_notification' (note: no "deliver_" or "create_")
+    def translate(key, options={})
+      Translator.translate_with_scope([self.mailer_name, self.action_name], key, options)
+    end
   
-  alias :t :translate
+    alias :t :translate
+  end
 end
