@@ -4,8 +4,6 @@ List of things todo:
 
 - Confirm that translate works for strings in helpers
 
-- Add methods to ActiveRecord
-
 - Strict mode? Catch accidental requests that would return hash of keys instead of string (usually unintended?)
 
 - Split up different parts into diff. tests / code for each part of MVC & mailers
