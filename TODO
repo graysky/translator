@@ -1,13 +1,22 @@
-List of things todo:
+List of things TODO
 
+Simple
 - Confirm that translate works for strings in helpers
 
+Testing
+
 - Strict mode? Catch accidental requests that would return hash of keys instead of string (usually unintended?)
-
-- Split up different parts into diff. tests / code for each part of MVC & mailers
-
-- How to make testing simpler?
+- Auto-detect "test" RAILS_ENV and enable strict mode
 
 - Pseudo-translating tool. If enabled, override default behavior to:
 -- raise exception on missing translation
 -- prepend/append markers to confirm that strings are externalized
+
+- rake task to find missing keys
+
+Refactor
+- Split up different parts into diff. tests / code for each part of MVC & mailers
+
+
+
+

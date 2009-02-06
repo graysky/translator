@@ -26,7 +26,7 @@ Without Translator in the @BlogPostsController.show@ action or @show.erb@ templa
 
 h3. Features
 
-Simple @translate@ (or @t@) method added to:
+h4. Simple @translate@ (or @t@) method added to:
 
 * ActionController
 * ActionView
@@ -35,6 +35,10 @@ Simple @translate@ (or @t@) method added to:
 
 *TODO* Describe backoff scoping
 
+h4. Test Helpers
+
+*TODO* Describe test helpers
+
 h3. Key Conventions
 
 *TODO* Describe the convention for: 
@@ -42,6 +46,12 @@ h3. Key Conventions
 * views (normal, layouts, partials)
 * models
 * mailers
+
+h3. Installation
+
+To install this plugin into your Rails app:
+
+@./script/plugin install git://github.com/graysky/translator.git@
 
 h3. RDoc API
 

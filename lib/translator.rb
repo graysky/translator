@@ -32,20 +32,12 @@ module Translator
     
     # From RDoc: 
     # Scope can be either a single key, a dot-separated key or an array of keys or dot-separated keys
-    
     scope ||= [] # guard against nil scope
-    RAILS_DEFAULT_LOGGER.debug { "key: #{key} scope: #{scope.to_s} options: #{options.to_s}" }
+    #RAILS_DEFAULT_LOGGER.debug { "key: #{key} scope: #{scope.to_s} options: #{options.to_s}" }
     
     # Convert the scopes to list of symbols and ignore anything
     # that cannot be converted
-    scope.map! do |e| 
-      if e.respond_to?(:to_sym)
-        e.to_sym
-      else
-        nil
-      end
-    end
-    
+    scope.map! { |e| e.respond_to?(:to_sym) ? e.to_sym : nil }
     scope.compact! # clear any nil values
     
     # Raise to know if the key was found
@@ -57,14 +49,12 @@ module Translator
     str = nil # the string being looked for
     
     # Loop through each scope until a string is found.
-    # Example: starts with scope of [:blog_posts :show] then tries scope [:blog_posts]
-    #
+    # Example: starts with scope of [:blog_posts :show] then tries scope [:blog_posts] then original
     while !scope.empty? && str.nil?
-    
       # Set scope to use for search
       scoped_options[:scope] = scope
     
-      RAILS_DEFAULT_LOGGER.debug { "searching key: #{key} scope: #{scope.to_s}" }
+      #RAILS_DEFAULT_LOGGER.debug { "searching key: #{key} scope: #{scope.to_s}" }
     
       begin
         # try to find key within scope
@@ -75,15 +65,37 @@ module Translator
       end
     end
     
-    if str.nil?
-      # Didn't find a string yet, so fall back to trying original request
-      str = I18n.translate(key, options)
-    end
-    
-    str
+    # If a string was not found yet, fall back to trying original request
+    str ||= I18n.translate(key, options)
   end
   
+  # Additions to TestUnit to make testing i18n easier
+  module Assertions
+    
+    def assert_translated(msg = nil, &block)
+      # Enable strict exception handler
+      I18n.exception_handler = :strict_i18n_exception_handler
+      
+      begin
+        yield
+      ensure
+        # uninstall strict exception handler
+        I18n.exception_handler = :default_exception_handler
+      end
+        
+    end
+  end
+  
+  module I18nExtensions
+    # Add an strict exception handler for testing that will raise all exceptions
+    def strict_i18n_exception_handler(exception, locale, key, options)
+      # Raise *all* exceptions
+      raise exception
+    end
+    
+  end
 end
+
 
 module ActionView #:nodoc:
   class Base
@@ -149,3 +161,18 @@ module ActionMailer #:nodoc:
     alias :t :translate
   end
 end
+
+module I18n
+  # Install the strict exception handler for testing
+  extend Translator::I18nExtensions
+end
+
+module Test # :nodoc: all
+  module Unit
+    class TestCase
+      include Translator::Assertions
+    end
+  end
+end
+
+

@@ -50,6 +50,11 @@ class BlogPostsController < ActionController::Base
     render :template => "blog_posts/show"
   end
   
+  # View that has a key that doesn't reference a valid string
+  def missing_translation
+    render :template => "blog_posts/missing_translation"
+  end
+  
   def different_formats
     # Get the same tagline using the different formats
     @taglines = []
@@ -266,5 +271,22 @@ class TranslatorTest < ActiveSupport::TestCase
     
     assert_equal I18n.t('blog_post.byline', :author => author), post.written_by
   end
+   
+   
+  ### TestUnit helpers
+  
+  # Fetch a miss
+  def test_assert_translated
+
+    assert_raise I18n::MissingTranslationData do
+      assert_translated do
+        str = "Exception should be raised #{I18n.t('the_missing_key')}"
+      end
+    end
     
+    assert_nothing_raised do
+      str = "Exception should not be raised #{I18n.t('the_missing_key')}"
+    end
+  end
+      
 end
