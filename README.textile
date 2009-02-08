@@ -26,6 +26,7 @@ Without Translator in the @BlogPostsController.show@ action or @show.erb@ templa
 
 h3. Features
 
+
 h4. Simple @translate@ (or @t@) method added to:
 
 * ActionController
@@ -49,7 +50,7 @@ h3. Key Conventions
 
 h3. Installation
 
-To install this plugin into your Rails app:
+To install this plugin into your Rails app (2.2 or later):
 
 @./script/plugin install git://github.com/graysky/translator.git@
 
