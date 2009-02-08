@@ -1,5 +1,11 @@
 require 'active_support'
 require 'action_view/helpers/translation_helper'
+require 'action_pack'
+require 'action_controller'
+require 'action_mailer'
+require 'active_record'
+
+require 'pp'
 
 # Extentions to make internationalization (i18n) of a Rails application simpler. 
 # Support the method +translate+ (or shorter +t+) in models/view/controllers/mailers.
@@ -69,6 +75,42 @@ module Translator
     str ||= I18n.translate(key, options)
   end
   
+  # Finds the missing translations compared to the provided locale
+  def self.find_missing_translations(locale=:en)
+    I18n.t('forces_locales_to_load') # if not already loaded
+    all_locales = I18n.get_available_locales
+    raise "Could not get available locales" if all_locales.nil?
+    
+    translations = I18n.backend.send(:translations)
+    
+    puts "All translations"
+    pp translations
+    
+    # The gold standard to compare other locales to
+    gold = translations[locale]
+    
+    puts "Gold is:"
+    pp gold
+    
+    missing = {}
+    
+    all_locales.each do |l|
+      next if locale == l
+      
+      children = translations[l]
+      puts "Children for #{l}"
+      pp children
+      
+      # TODO Need deep reject
+      #       
+      #       # deep_merge by Stefan Rusterholz, see http://www.ruby-forum.com/topic/142809
+      #       #merger = proc { |key, v1, v2| Hash === v1 && Hash === v2 ? v1.merge(v2, &merger) : v2 }
+      #       #diff = translations[l].merge(gold, &merger)
+      #       
+      #       puts diff.inspect
+    end    
+  end
+  
   # Additions to TestUnit to make testing i18n easier
   module Assertions
     
@@ -86,11 +128,22 @@ module Translator
     end
   end
   
+  # Module to mixin extentions to built-in I18n module
   module I18nExtensions
-    # Add an strict exception handler for testing that will raise all exceptions
+    # Add an strict exception handler for testing that will raise all exceptions.
+    # The default_exception_handler in I18n will replace MissingTranslationData exceptions
+    # with a message. Strict mode is useful for testing.
     def strict_i18n_exception_handler(exception, locale, key, options)
       # Raise *all* exceptions
       raise exception
+    end
+    
+    # Port of 2.3 functionality for getting all the available locales as a list of keys
+    # or returns nil if unable
+    def get_available_locales
+      # Backend doesn't appear to support it
+      return nil if backend.nil? || !backend.respond_to?(:translations)      
+      backend.send(:translations).keys
     end
     
   end
@@ -174,5 +227,3 @@ module Test # :nodoc: all
     end
   end
 end
-
-

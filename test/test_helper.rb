@@ -15,7 +15,7 @@ require 'pp'
 require File.dirname(__FILE__) + '/../../../../test/test_helper'
 
 require File.dirname(__FILE__) + '/../init'
-RAILS_ENV  = "test" unless defined? RAILS_ENV
+RAILS_ENV = "test" unless defined? RAILS_ENV
 
 # Set up an ActiveRecord connection to sqlite db for testing
 # 

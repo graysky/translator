@@ -145,6 +145,9 @@ class TranslatorTest < ActiveSupport::TestCase
     I18n.backend.store_translations 'en', :blog_comment_mailer => {:comment_notification => {:subject => "New Comment Notification" } }
     I18n.backend.store_translations 'en', :blog_comment_mailer => {:comment_notification => {:signoff => "Your Faithful Emailing Bot" } }
     
+    # Spanish version (poorly translated)
+    I18n.backend.store_translations 'es', :blog_posts => {:index => {:title => "El Blog de Ricky" } }
+    
     # Set up test env
     @controller = BlogPostsController.new
     @request    = ActionController::TestRequest.new
@@ -288,5 +291,30 @@ class TranslatorTest < ActiveSupport::TestCase
       str = "Exception should not be raised #{I18n.t('the_missing_key')}"
     end
   end
-      
+  
+  # Helper method to get all the locales in Rails 2.2
+  def test_get_all_locales
+    # Should find :en and :es
+    assert_equal [:en, :es], I18n.get_available_locales
+  end
+
+  # Test 
+  def test_find_missing_translations
+    # Create an empty testbed
+    I18n.backend = I18n::Backend::Simple.new
+    I18n.load_path = []
+   
+    # English original
+    I18n.backend.store_translations 'en', :parent => {:child1 => {:title => "Burp" } }
+    I18n.backend.store_translations 'en', :parent => {:child2 => {:title => "Sneeze" } }
+    
+    # German
+    I18n.backend.store_translations 'de', :parent => {:child1 => {:title => "Kugelschreiber" } }
+    
+    # Spanish
+    I18n.backend.store_translations 'es', :parent => {:child2 => {:title => "sacapuntas" } }
+    
+    missing = Translator.find_missing_translations(:en)
+    assert_not_nil missing
+  end
 end
