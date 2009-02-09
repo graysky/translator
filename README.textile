@@ -40,6 +40,20 @@ h4. Test Helpers
 
 *TODO* Describe test helpers
 
+* @Translator.strict_mode@ will cause an exception to be thrown for any missing translation. Only enabled during testing
+
+* @assert_translated@ takes a block and asserts that all strings within that block have translations. It is a more 
+targeted version of @strict_mode@. Example:
+
+<pre>
+<code>
+assert_translated do
+  # Will assert that all keys find valid translations inside the block
+  get :show
+end
+</code>
+</pre>
+
 h3. Key Conventions
 
 *TODO* Describe the convention for: 
