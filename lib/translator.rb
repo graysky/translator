@@ -6,6 +6,18 @@ require 'action_view/helpers/translation_helper'
 #
 module Translator
   VERSION = '0.3.0'
+  
+  # Whether to enable strict translation
+  @@strict_mode = false
+
+  def self.strict_mode
+    @@strict_mode
+  end
+
+  # Enable/disable strict exception mode
+  def self.strict_mode(v)
+    @@strict_mode = v
+  end
 
   # Performs lookup with a given scope. The scope should be an array of strings or symbols
   # ordered from highest to lowest scoping. For example, for a given PicturesController 
@@ -69,18 +81,28 @@ module Translator
     str ||= I18n.translate(key, options)
   end
   
+  # Toggle whether to true an exception on *all* MissingTranslationData exceptions
+  # Useful for testing scenarios.
+  def self.toggle_strict_translation(enable_strict = true)
+    if enable_strict
+      # Switch to using contributed exception handler
+      I18n.exception_handler = :strict_i18n_exception_handler
+    else
+      I18n.exception_handler = :default_exception_handler
+    end
+  end
+  
   # Additions to TestUnit to make testing i18n easier
   module Assertions
     
     def assert_translated(msg = nil, &block)
-      # Enable strict exception handler
-      I18n.exception_handler = :strict_i18n_exception_handler
+      Translator.toggle_strict_translation(true)
       
       begin
         yield
       ensure
         # uninstall strict exception handler
-        I18n.exception_handler = :default_exception_handler
+        Translator.toggle_strict_translation(false)
       end
         
     end
@@ -95,7 +117,6 @@ module Translator
     
   end
 end
-
 
 module ActionView #:nodoc:
   class Base
@@ -173,6 +194,11 @@ module Test # :nodoc: all
       include Translator::Assertions
     end
   end
+end
+
+# In test environment, enable strict exception handling if strict mode is set
+if defined? RAILS_ENV && RAILS_ENV == "test" && Translator.strict_mode
+  Translator.toggle_strict_translation(true)
 end
 
 

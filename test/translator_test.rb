@@ -275,9 +275,23 @@ class TranslatorTest < ActiveSupport::TestCase
    
   ### TestUnit helpers
   
+  def test_strict_mode
+    Translator.toggle_strict_translation(true)
+    
+    # With strict mode on, exception should be thrown
+    assert_raise I18n::MissingTranslationData do
+      str = "Exception should be raised #{I18n.t('the_missing_key')}"
+    end
+    
+    Translator.toggle_strict_translation(false)
+    
+    assert_nothing_raised do
+      str = "Exception should not be raised #{I18n.t('the_missing_key')}"
+    end
+  end
+  
   # Fetch a miss
   def test_assert_translated
-
     assert_raise I18n::MissingTranslationData do
       assert_translated do
         str = "Exception should be raised #{I18n.t('the_missing_key')}"
