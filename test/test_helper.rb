@@ -11,9 +11,6 @@ require 'active_record/fixtures'
 
 require 'pp'
 
-# Require the test_helper from Rails app this plugin is embedded within?
-require File.dirname(__FILE__) + '/../../../../test/test_helper'
-
 require File.dirname(__FILE__) + '/../init'
 RAILS_ENV  = "test" unless defined? RAILS_ENV
 
