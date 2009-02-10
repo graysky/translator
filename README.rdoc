@@ -1,0 +1,70 @@
+= Translator - i18n tooling for Rails
+
+Translator make using the internationalization (i18n) facility introduced in Rails 2.2 simpler by keeping your code DRY through simple conventions.
+
+== The Problem
+
+The (very!) helpful I18n[http://api.rubyonrails.org/classes/I18n.html] library finds keys in locale bundles, but doesn't know anything about Rails application layouts (models/views/controllers/mailers). For Rails apps that have a lot of strings, this can lead to un-DRY code.  
+
+Translator defines a convention for the hierarchy of keys within locale bundles. When looking up a key for translation it infers a context for the request. This can make the code simpler to read, while still using the handy I18n library.
+
+== Example
+
+Assuming a locale YAML file for English strings that looks like:
+
+  en:
+    blog_posts: # controller
+      show: # action
+        title: "My Blog Posts"
+        byline: "Posted by {{author}}"
+
+Without Translator in the <tt>BlogPostsController.show</tt> action or <tt>show.erb</tt> template, to pull up the title string would be <tt>I18n.translate('blog_posts.show.title')</tt>. Translator knows the context so it can simply be <tt>t('title')</tt>.
+
+== Features
+
+=== Simple +translate+ (or +t+) method added to:
+
+* ActionController
+* ActionView
+* ActiveRecord
+* ActionMailer
+
+*TODO* Describe backoff scoping
+
+=== Test Helpers
+
+*TODO* Describe test helpers
+
+* <tt>Translator.strict_mode</tt> will cause an exception to be thrown for any missing translation. Only enabled during testing
+
+* <tt>assert_translated</tt> takes a block and asserts that all strings within that block have translations. It is a more 
+targeted version of <tt>strict_mode</tt>. Example:
+
+
+  assert_translated do
+    # Will assert that all keys find valid translations inside the block
+    get :show
+  end
+
+=== Key Conventions
+
+*TODO* Describe the convention for: 
+* controllers
+* views (normal, layouts, partials)
+* models
+* mailers
+
+=== Installation
+
+To install this plugin into your Rails app (2.2 or later):
+
+<tt>./script/plugin install git://github.com/graysky/translator.git</tt>
+
+=== RDoc API
+
+{RDocs are online}[http://graysky.github.com/translator/rdoc/index.html] or can be generated via <tt>rake rdoc</tt> in the translator directory.
+
+
+Bug reports welcome. Patches very welcome.
+
+Copyright (c) 2009 {Mike Champion}[http://graysky.org], released under the MIT license

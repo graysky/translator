@@ -276,14 +276,14 @@ class TranslatorTest < ActiveSupport::TestCase
   ### TestUnit helpers
   
   def test_strict_mode
-    Translator.toggle_strict_translation(true)
+    Translator.strict_mode(true)
     
     # With strict mode on, exception should be thrown
     assert_raise I18n::MissingTranslationData do
       str = "Exception should be raised #{I18n.t('the_missing_key')}"
     end
     
-    Translator.toggle_strict_translation(false)
+    Translator.strict_mode(false)
     
     assert_nothing_raised do
       str = "Exception should not be raised #{I18n.t('the_missing_key')}"
@@ -292,7 +292,8 @@ class TranslatorTest < ActiveSupport::TestCase
   
   # Fetch a miss
   def test_assert_translated
-    assert_raise I18n::MissingTranslationData do
+    # Within the assert_translated block, any missing keys fail the test
+    assert_raise Test::Unit::AssertionFailedError do
       assert_translated do
         str = "Exception should be raised #{I18n.t('the_missing_key')}"
       end

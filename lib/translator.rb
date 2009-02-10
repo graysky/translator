@@ -3,22 +3,9 @@ require 'action_view/helpers/translation_helper'
 
 # Extentions to make internationalization (i18n) of a Rails application simpler. 
 # Support the method +translate+ (or shorter +t+) in models/view/controllers/mailers.
-#
 module Translator
-  VERSION = '0.3.0'
+  VERSION = '0.4.0'
   
-  # Whether to enable strict translation
-  @@strict_mode = false
-
-  def self.strict_mode
-    @@strict_mode
-  end
-
-  # Enable/disable strict exception mode
-  def self.strict_mode(v)
-    @@strict_mode = v
-  end
-
   # Performs lookup with a given scope. The scope should be an array of strings or symbols
   # ordered from highest to lowest scoping. For example, for a given PicturesController 
   # with an action "show" the scope should be ['pictures', 'show'] which happens automatically.
@@ -81,9 +68,11 @@ module Translator
     str ||= I18n.translate(key, options)
   end
   
-  # Toggle whether to true an exception on *all* MissingTranslationData exceptions
-  # Useful for testing scenarios.
-  def self.toggle_strict_translation(enable_strict = true)
+  # Toggle whether to true an exception on *all* +MissingTranslationData+ exceptions
+  # Useful during testing to ensure all keys are found.
+  # Passing +true+ enables strict mode, +false+ installs the default exception handler which
+  # does not raise on +MissingTranslationData+
+  def self.strict_mode(enable_strict = true)
     if enable_strict
       # Switch to using contributed exception handler
       I18n.exception_handler = :strict_i18n_exception_handler
@@ -95,14 +84,31 @@ module Translator
   # Additions to TestUnit to make testing i18n easier
   module Assertions
     
+    # Assert that within the block there are no missing translation keys.
+    # This can be used in a more tailored way that the global +strict_mode+
+    #
+    # Example:
+    #   assert_translated do
+    #     str = "Test will fail for #{I18n.t('a_missing_key')}"
+    #   end
+    #
     def assert_translated(msg = nil, &block)
-      Translator.toggle_strict_translation(true)
+      
+      # Enable strict mode to force raising of MissingTranslationData
+      Translator.strict_mode(true)
+      
+      msg ||= "Expected no missing translation keys"
       
       begin
         yield
+        # Credtit for running the assertion
+        assert(true, msg)
+      rescue I18n::MissingTranslationData => e
+        # Fail!
+        assert_block(build_message(msg, "Exception raised:\n?", e)) {false}
       ensure
         # uninstall strict exception handler
-        Translator.toggle_strict_translation(false)
+        Translator.strict_mode(false)
       end
         
     end
@@ -196,9 +202,7 @@ module Test # :nodoc: all
   end
 end
 
-# In test environment, enable strict exception handling if strict mode is set
-if defined? RAILS_ENV && RAILS_ENV == "test" && Translator.strict_mode
-  Translator.toggle_strict_translation(true)
+# In test environment, enable strict exception handling for missing translations
+if (defined? RAILS_ENV) && (RAILS_ENV == "test")
+  Translator.strict_mode(true)
 end
-
-
