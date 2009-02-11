@@ -20,6 +20,12 @@ Assuming a locale YAML file for English strings that looks like:
 
 Without Translator in the <tt>BlogPostsController.show</tt> action or <tt>show.erb</tt> template, to pull up the title string would be <tt>I18n.translate('blog_posts.show.title')</tt>. Translator knows the context so it can simply be <tt>t('title')</tt>.
 
+== Plugin Installation (Rails 2.2+)
+
+To install this plugin into your Rails app (2.2 or later):
+
+<tt>./script/plugin install git://github.com/graysky/translator.git</tt>
+
 == Features
 
 === Simple +translate+ (or +t+) method added to:
@@ -54,11 +60,7 @@ targeted version of <tt>strict_mode</tt>. Example:
 * models
 * mailers
 
-=== Installation
 
-To install this plugin into your Rails app (2.2 or later):
-
-<tt>./script/plugin install git://github.com/graysky/translator.git</tt>
 
 === RDoc API
 
