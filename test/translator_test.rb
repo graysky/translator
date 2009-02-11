@@ -20,7 +20,10 @@ class BlogCommentMailer < ActionMailer::Base
   end
 end
 
-BlogCommentMailer.template_root = "#{File.dirname(__FILE__)}/fixtures/"
+BlogCommentMailer.template_root = "#{File.dirname(__FILE__)}/fixtures/app/views"
+
+# Include the helpers directory on the load path
+$:.unshift "#{File.dirname(__FILE__)}/fixtures/app/helpers"
 
 # Stub a Blog Posts controller
 class BlogPostsController < ActionController::Base
@@ -48,6 +51,11 @@ class BlogPostsController < ActionController::Base
   # Render the show action with a layout
   def show_with_layout
     render :template => "blog_posts/show"
+  end
+  
+  # The archives action references a view helper
+  def archives
+    render :template => "blog_posts/archives"
   end
   
   # View that has a key that doesn't reference a valid string
@@ -97,7 +105,7 @@ class BlogPostsController < ActionController::Base
   
   def fix_view_paths
     # Append the view path to get the correct views/partials 
-    self.append_view_path("#{File.dirname(__FILE__)}/fixtures/")
+    self.append_view_path("#{File.dirname(__FILE__)}/fixtures/app/views")
   end
   
 end
@@ -123,6 +131,9 @@ class TranslatorTest < ActiveSupport::TestCase
     # Sample post
     I18n.backend.store_translations 'en', :blog_posts => {:show => {:title => "Catz Are Cute" } }
     I18n.backend.store_translations 'en', :blog_posts => {:show => {:body => "My cat {{name}} is the most awesome" } }
+    
+    # To be pulled out in a view helper
+    I18n.backend.store_translations 'en', :blog_posts => {:archives => {:title => "My Blog Archives" } }
     
     # Fully qualified key
     I18n.backend.store_translations 'en', :header => {:author => {:name => "Ricky Rails" } }
@@ -241,6 +252,29 @@ class TranslatorTest < ActiveSupport::TestCase
     
     blog_name = I18n.t('shared.header.blog_name')
     assert_match /#{blog_name}/, @response.body
+  end
+  
+  # Test that view helpers inherit correct scoping
+  def test_view_helpers
+    get :archives
+    assert_response :success
+    
+    archives_title = I18n.t('blog_posts.archives.title')
+    assert_match /#{archives_title}/, @response.body
+  end
+  
+  # Test that original behavior of TranslationHelper is not undone.
+  # It adds a <span class="translation_missing"> that should still be there
+  def test_missing_translation_show_in_span
+    Translator.strict_mode(false)
+    
+    assert_nothing_raised do
+      get :missing_translation
+      assert_response :success
+
+      # behavior added by TranslationHelper
+      assert_match /span class="translation_missing"/, @response.body, "Should be a span tag translation_missing"
+    end
   end
   
   ### ActionMailer Tests
