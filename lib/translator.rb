@@ -4,7 +4,7 @@ require 'action_view/helpers/translation_helper'
 # Extentions to make internationalization (i18n) of a Rails application simpler. 
 # Support the method +translate+ (or shorter +t+) in models/view/controllers/mailers.
 module Translator
-  VERSION = '0.4.0'
+  VERSION = '0.5.0'
   
   # Performs lookup with a given scope. The scope should be an array of strings or symbols
   # ordered from highest to lowest scoping. For example, for a given PicturesController 
@@ -32,7 +32,6 @@ module Translator
     # From RDoc: 
     # Scope can be either a single key, a dot-separated key or an array of keys or dot-separated keys
     scope ||= [] # guard against nil scope
-    #RAILS_DEFAULT_LOGGER.debug { "key: #{key} scope: #{scope.to_s} options: #{options.to_s}" }
     
     # Convert the scopes to list of symbols and ignore anything
     # that cannot be converted
@@ -52,8 +51,6 @@ module Translator
     while !scope.empty? && str.nil?
       # Set scope to use for search
       scoped_options[:scope] = scope
-    
-      #RAILS_DEFAULT_LOGGER.debug { "searching key: #{key} scope: #{scope.to_s}" }
     
       begin
         # try to find key within scope
@@ -140,7 +137,14 @@ module ActionView #:nodoc:
       # Partials template names start with underscore, which should be removed
       inner_scope.sub!(/^_/, '')
       
-      Translator.translate_with_scope([outer_scope, inner_scope], key, options)
+      # In the case of a missing translation, fall back to letting TranslationHelper
+      # put in span tag for a translation_missing.
+      begin
+        Translator.translate_with_scope([outer_scope, inner_scope], key, options.merge({:raise => true}))
+      rescue I18n::MissingTranslationData
+        # Call the original translate method
+        translate_without_context(key, options)
+      end
     end
   
     alias_method_chain :translate, :context

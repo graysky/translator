@@ -1,70 +1,111 @@
 = Translator - i18n tooling for Rails
 
-Translator make using the internationalization (i18n) facility introduced in Rails 2.2 simpler by keeping your code DRY through simple conventions.
+Translator make using the internationalization (i18n) facility introduced in Rails 2.2 simpler by keeping your code DRY through simple conventions, 
+and makes testing easier.
 
 == The Problem
 
-The (very!) helpful I18n[http://api.rubyonrails.org/classes/I18n.html] library finds keys in locale bundles, but doesn't know anything about Rails application layouts (models/views/controllers/mailers). For Rails apps that have a lot of strings, this can lead to un-DRY code.  
+The (very!) helpful I18n[http://api.rubyonrails.org/classes/I18n.html] library finds keys in locale bundles, but doesn't know anything about Rails applications. Applications that have a lot of strings need a system of keeping them organized. This can lead to write code that makes you repeat yourself again and again about which key to find.
 
-Translator defines a convention for the hierarchy of keys within locale bundles. When looking up a key for translation it infers a context for the request. This can make the code simpler to read, while still using the handy I18n library.
+Translator adds smarts to controllers, views, models & mailers to know the context of the request to find a key. Translator defines a convention for the hierarchy of keys within locale bundles that makes it simpler to code and maintain, while still getting all the benefits of the underlying I18n library.
 
-== Example
+Quick example - if you follow the key convention of structuring your locale bundle like:
+  blog_posts: # controller
+    show: # action
+      title: "My Awesome Blog Post"
+      byline: "Written by {{author}}"
 
-Assuming a locale YAML file for English strings that looks like:
+Then when writing the <tt>BlogPostsController.show</tt> action you can just use <tt>t('title')</tt> to fetch the string (equivalent to <tt>I18n.translate('blog_posts.show.title')</tt>). Similarly, in the <tt>show.erb</tt> template you can get use <tt>t('byline', :author => "Mike")</tt>. This extends to Models and Mailers as well. As they say, "Look at all the things I'm not doing!"
 
-  en:
-    blog_posts: # controller
-      show: # action
-        title: "My Blog Posts"
-        byline: "Posted by {{author}}"
+== Plugin Installation
 
-Without Translator in the <tt>BlogPostsController.show</tt> action or <tt>show.erb</tt> template, to pull up the title string would be <tt>I18n.translate('blog_posts.show.title')</tt>. Translator knows the context so it can simply be <tt>t('title')</tt>.
+To install this plugin into your Rails app (2.2 or later):
 
-== Features
+  ./script/plugin install git://github.com/graysky/translator.git
 
-=== Simple +translate+ (or +t+) method added to:
+== Simple +translate+ Everywhere
 
+The +translate+ (or shorter +t+) method is added to:
 * ActionController
 * ActionView
 * ActiveRecord
 * ActionMailer
 
-*TODO* Describe backoff scoping
+In the spirit of Rails, there is a hierarchy of keys that borrows the same layout as the typical "views" directory. A sample Blog application 
+is used as an example.
 
-=== Test Helpers
+For controllers/views/mailers it is:
+  en: # locale
+    # the controller name
+    blog_posts:
+      # the action name
+      index:
+        key: "Hello World"
+      
+      # partials w/o underscore (template "_footer.erb")      
+      footer: 
+        key: "My Copyright"
+    
+    # "layouts" is fixed
+    layouts:
+      # the layout name (template "main.erb")
+      main:
+        key: "My App Name"
+    
+    # for shared partials called like: render :template => "shared/user"
+    # where "shared" is the directory name
+    shared:
+      # partial name w/o underscore (template "_user.erb")
+      user:
+        key: "Foo"
 
-*TODO* Describe test helpers
-
-* <tt>Translator.strict_mode</tt> will cause an exception to be thrown for any missing translation. Only enabled during testing
-
-* <tt>assert_translated</tt> takes a block and asserts that all strings within that block have translations. It is a more 
-targeted version of <tt>strict_mode</tt>. Example:
-
-
-  assert_translated do
-    # Will assert that all keys find valid translations inside the block
-    get :show
-  end
-
-=== Key Conventions
-
-*TODO* Describe the convention for: 
-* controllers
-* views (normal, layouts, partials)
-* models
-* mailers
-
-=== Installation
-
-To install this plugin into your Rails app (2.2 or later):
-
-<tt>./script/plugin install git://github.com/graysky/translator.git</tt>
-
-=== RDoc API
-
-{RDocs are online}[http://graysky.github.com/translator/rdoc/index.html] or can be generated via <tt>rake rdoc</tt> in the translator directory.
+    # the full mailer name
+    blog_comment_mailer:
+      # the method name (does not include "delever")
+      comment_notification:
+        subject: "New Comment"
+        
+For models it is:
+  en:
+    # The model name
+    blog_post:
+      key: "Custom validation error" 
 
 
-Bug reports welcome. Patches very welcome.
+=== Key Lookup
+
+When a key is looked up, Translator adds extra scoping to the lookup based on where it is called from. For:
+* Controllers & Views the scope includes <tt>[:controller_name, :action_name]</tt>. (For shared partials it is <tt>[:template_path, :partial_name]</tt>)
+* Mailers the scope includes <tt>[:mailer_name, :method_name]</tt>
+* Models the scope includes <tt>[:model_name]</tt>
+
+But what happens when if you want to share strings across a controller? Let's say you have error messages that are set in flash notices
+and then are shared between actions in a controller defined in the locale bundle like:
+  blog_posts:
+    errors:
+      permission_denied: "Permission denied to read this blog post"
+
+If Translator doesn't find the original key, it will remove a layer of scoping and try again.
+So if in our Blogs controller +show+ action we want to set a <tt>flash[:error]</tt> to a permission denied message it can find the string by calling <tt>t('error.permission_denied')</tt>.
+Translator will first look for "blog_posts.show.error.permission_denied", which doesn't exist. So it will then try to find 
+"blog_posts.errors.permission_denied" and return the correct string. This can be used to create greater levels of scoping, or to force finding 
+global strings (ex. <tt>t("global.app_name")</tt>).
+
+== Test Helpers
+
+* <tt>Translator.strict_mode</tt> will cause an exception to be raised for any missing translations. Enabled by default during testing to help find key accidently forgotten. It can be disabled by calling <tt>Translator.strict_mode(false)</tt> (like in a test helper), but it can help catch typos.
+* <tt>assert_translated</tt> takes a block and asserts that all lookups within that block have real translations. It is a more targeted version of <tt>strict_mode</tt>. Example:
+
+    assert_translated do
+      # Will assert that all keys find valid translations inside the block
+      get :show
+    end
+
+== RDoc API
+
+{The RDocs are online}[http://graysky.github.com/translator/rdoc/index.html] or can be generated via <tt>rake rdoc</tt> in the translator plugin directory.
+
+
+Bug reports welcome. {Patches very welcome}[http://github.com/graysky/translator].
 
 Copyright (c) 2009 {Mike Champion}[http://graysky.org], released under the MIT license

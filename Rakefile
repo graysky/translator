@@ -16,8 +16,19 @@ end
 desc 'Generate documentation for the translator plugin.'
 Rake::RDocTask.new(:rdoc) do |rdoc|
   rdoc.rdoc_dir = 'rdoc'
-  rdoc.title    = 'Translator'
+  rdoc.title    = 'Translator - i18n tooling for Rails'
   rdoc.options << '--line-numbers' << '--inline-source'
   rdoc.rdoc_files.include('README.rdoc')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
+
+# Requires the allison gem and uses a path that only works locally
+# desc 'Generate prettified documentation for the translator plugin.'
+# Rake::RDocTask.new(:rdoc_pretty) do |rdoc|
+#   rdoc.rdoc_dir = 'rdoc'
+#   rdoc.title    = 'Translator'
+#   rdoc.options << '--line-numbers' << '--inline-source'
+#   rdoc.template = '/Library/Ruby/Gems/1.8/gems/allison-2.0.3/lib/allison'
+#   rdoc.rdoc_files.include('README.rdoc')
+#   rdoc.rdoc_files.include('lib/**/*.rb')
+# end
