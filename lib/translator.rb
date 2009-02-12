@@ -4,7 +4,7 @@ require 'action_view/helpers/translation_helper'
 # Extentions to make internationalization (i18n) of a Rails application simpler. 
 # Support the method +translate+ (or shorter +t+) in models/view/controllers/mailers.
 module Translator
-  VERSION = '0.4.0'
+  VERSION = '0.5.0'
   
   # Performs lookup with a given scope. The scope should be an array of strings or symbols
   # ordered from highest to lowest scoping. For example, for a given PicturesController 

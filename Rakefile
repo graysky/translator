@@ -16,7 +16,7 @@ end
 desc 'Generate documentation for the translator plugin.'
 Rake::RDocTask.new(:rdoc) do |rdoc|
   rdoc.rdoc_dir = 'rdoc'
-  rdoc.title    = 'Translator'
+  rdoc.title    = 'Translator - i18n tooling for Rails'
   rdoc.options << '--line-numbers' << '--inline-source'
   rdoc.rdoc_files.include('README.rdoc')
   rdoc.rdoc_files.include('lib/**/*.rb')
