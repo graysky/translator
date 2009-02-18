@@ -277,6 +277,15 @@ class TranslatorTest < ActiveSupport::TestCase
     end
   end
   
+  # Test that strict mode prevents TranslationHelper from adding span.
+  def test_strict_mode_in_views
+    Translator.strict_mode(true)
+    
+    get :missing_translation
+    assert_response :error
+    assert_match /18n::MissingTranslationData/, @response.body, "Exception should be for a missing translation"
+  end
+  
   ### ActionMailer Tests
   
   def test_mailer    
