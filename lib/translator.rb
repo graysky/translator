@@ -6,6 +6,9 @@ require 'action_view/helpers/translation_helper'
 module Translator
   VERSION = '0.5.0'
   
+  # Whether strict mode is enabled
+  @@strict_mode = false
+  
   # Performs lookup with a given scope. The scope should be an array of strings or symbols
   # ordered from highest to lowest scoping. For example, for a given PicturesController 
   # with an action "show" the scope should be ['pictures', 'show'] which happens automatically.
@@ -70,12 +73,19 @@ module Translator
   # Passing +true+ enables strict mode, +false+ installs the default exception handler which
   # does not raise on +MissingTranslationData+
   def self.strict_mode(enable_strict = true)
+    @@strict_mode = enable_strict
+    
     if enable_strict
       # Switch to using contributed exception handler
       I18n.exception_handler = :strict_i18n_exception_handler
     else
       I18n.exception_handler = :default_exception_handler
     end
+  end
+  
+  # Get if it is in strict mode
+  def self.strict_mode?
+    @@strict_mode
   end
   
   # Additions to TestUnit to make testing i18n easier
@@ -141,9 +151,16 @@ module ActionView #:nodoc:
       # put in span tag for a translation_missing.
       begin
         Translator.translate_with_scope([outer_scope, inner_scope], key, options.merge({:raise => true}))
-      rescue I18n::MissingTranslationData
+      rescue I18n::MissingTranslationData => exc
         # Call the original translate method
-        translate_without_context(key, options)
+        str = translate_without_context(key, options)
+        
+        # In strict mode, do not allow TranslationHelper to add "translation missing" span like:
+        # <span class="translation_missing">en, missing_string</span>
+        #
+        raise if Translator.strict_mode? && str =~ /span class\=\"translation_missing\"/
+        
+        str
       end
     end
   
