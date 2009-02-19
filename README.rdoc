@@ -103,9 +103,9 @@ global strings (ex. <tt>t("global.app_name")</tt>).
 
 * If you're trying to avoid hard-coding strings in tests, you can still use the lookup that is added to models and controllers:
   
-    # Inside a test exercising my BlogPostController (@controller created in setup method) 
-    get :show
-    # the byline should be in the body
+    # Inside a test exercising a BlogPostController (@controller created in setup method) 
+    get :show, :id => 123
+    # the byline should be in the body - uses @controller to make lookup easy (automatically knows controller name and action)
     assert_match @controller.t('byline', :name => "Mike"), @response.body
 
 == RDoc API
