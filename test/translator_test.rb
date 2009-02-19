@@ -268,13 +268,11 @@ class TranslatorTest < ActiveSupport::TestCase
   def test_missing_translation_show_in_span
     Translator.strict_mode(false)
     
-    assert_nothing_raised do
-      get :missing_translation
-      assert_response :success
+    get :missing_translation
+    assert_response :success
 
-      # behavior added by TranslationHelper
-      assert_match /span class="translation_missing"/, @response.body, "Should be a span tag translation_missing"
-    end
+    # behavior added by TranslationHelper
+    assert_match /span class="translation_missing"/, @response.body, "Should be a span tag translation_missing"
   end
   
   # Test that strict mode prevents TranslationHelper from adding span.
