@@ -7,7 +7,7 @@ and makes testing easier.
 
 The (very!) helpful I18n[http://api.rubyonrails.org/classes/I18n.html] library finds keys in locale bundles, but doesn't know anything about Rails applications. Applications that have a lot of strings need a system of keeping them organized. This can lead to write code that makes you repeat yourself again and again about which key to find.
 
-Translator adds smarts to controllers, views, models & mailers to know the context of the request to find a key. Translator defines a convention for the hierarchy of keys within locale bundles that makes it simpler to code and maintain, while still getting all the benefits of the underlying I18n library.
+Translator adds smarts to controllers, views, models & mailers to know the context of the request to find a key. Translator defines a convention for the hierarchy of keys within locale bundles that makes it simpler to code and maintain, while still getting all the benefits of the underlying I18n library. (Note: Translator does not care how the actual yml files are stored in the filesystem.)
 
 Quick example - if you follow the key convention of structuring your locale bundle like:
   blog_posts: # controller
