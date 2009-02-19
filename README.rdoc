@@ -101,6 +101,13 @@ global strings (ex. <tt>t("global.app_name")</tt>).
       get :show
     end
 
+* If you're trying to avoid hard-coding strings in tests, you can still use the lookup that is added to models and controllers:
+  
+    # Inside a test exercising my BlogPostController (@controller created in setup method) 
+    get :show
+    # the byline should be in the body
+    assert_match @controller.t('byline', :name => "Mike"), @response.body
+
 == RDoc API
 
 {The RDocs are online}[http://graysky.github.com/translator/rdoc/index.html] or can be generated via <tt>rake rdoc</tt> in the translator plugin directory.
