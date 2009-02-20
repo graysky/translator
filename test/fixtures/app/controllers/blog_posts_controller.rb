@@ -12,7 +12,7 @@ class BlogPostsController < ActionController::Base
   def index
     # Pull out sample strings for index to the fake blog
     @page_title = t('title')
-    @body = translate(:intro, :owner => "Ricky Rails")
+    @intro = translate(:intro, :owner => "Ricky Rails")
     render :nothing => true, :layout => false
   end
   

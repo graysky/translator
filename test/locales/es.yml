@@ -1,0 +1,8 @@
+# Spanish version (pardon the bad translations)
+es:
+  # Controller
+  blog_posts:
+    # typical actions
+    index: 
+      # Purposely has the intro but *not* "title" key
+      intro: "Bienvenidos a el blog de {{owner}}"

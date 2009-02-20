@@ -4,10 +4,13 @@ require 'action_view/helpers/translation_helper'
 # Extentions to make internationalization (i18n) of a Rails application simpler. 
 # Support the method +translate+ (or shorter +t+) in models/view/controllers/mailers.
 module Translator
-  VERSION = '0.5.5'
+  VERSION = '0.6.0'
   
   # Whether strict mode is enabled
   @@strict_mode = false
+  
+  # Whether to fallback from the set locale to the default locale
+  @@fallback_mode = false
   
   # Whether to pseudo-translate all fetched strings
   @@pseudo_translate = false
@@ -40,12 +43,11 @@ module Translator
   # broader scope ('pictures.errors.deleted_picture') will find the string.
   #
   def self.translate_with_scope(scope, key, options={})
-    # Keep the original options clean
-    scoped_options = {}.merge(options)
-    
-    # From RDoc: 
-    # Scope can be either a single key, a dot-separated key or an array of keys or dot-separated keys
     scope ||= [] # guard against nil scope
+    
+    # Keep the original options clean
+    original_scope = scope.dup
+    scoped_options = {}.merge(options)
     
     # Convert the scopes to list of symbols and ignore anything
     # that cannot be converted
@@ -61,7 +63,8 @@ module Translator
     str = nil # the string being looked for
     
     # Loop through each scope until a string is found.
-    # Example: starts with scope of [:blog_posts :show] then tries scope [:blog_posts] then original
+    # Example: starts with scope of [:blog_posts :show] then tries scope [:blog_posts] then 
+    # without automatically added scope.
     while !scope.empty? && str.nil?
       # Set scope to use for search
       scoped_options[:scope] = scope
@@ -75,7 +78,13 @@ module Translator
       end
     end
     
-    # If a string was not found yet, fall back to trying original request
+    # If a string is not yet found, potentially check the default locale if in fallback mode.
+    if str.nil? && Translator.fallback? && (I18n.locale != I18n.default_locale) && options[:locale].nil?
+      # Recurse original request, but in the context of the default locale
+      str ||= Translator.translate_with_scope(original_scope, key, options.merge({:locale => I18n.default_locale}))
+    end
+    
+    # If a string was still not found, fall back to trying original request (gets default behavior)
     str ||= I18n.translate(key, options)
     
     # If pseudo-translating, prepend / append marker text
@@ -84,6 +93,20 @@ module Translator
     end
     
     str
+  end
+  
+  # When fallback mode is enabled if a key cannot be found in the set locale,
+  # it uses the default locale. So, for example, if an app is mostly localized
+  # to Spanish (:es), but a new page is added then Spanish users will continue
+  # to see mostly Spanish content but the English version (assuming the <tt>default_locale</tt> is :en)
+  # for the new page that has not yet been translated to Spanish.
+  def self.fallback(enable = true)
+    @@fallback_mode = enable
+  end
+  
+  # If fallback mode is enabled
+  def self.fallback?
+    @@fallback_mode
   end
   
   # Toggle whether to true an exception on *all* +MissingTranslationData+ exceptions

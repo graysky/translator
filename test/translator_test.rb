@@ -28,8 +28,9 @@ class TranslatorTest < ActiveSupport::TestCase
     # tell the I18n library where to find your translations
     I18n.load_path += Dir.glob(File.join(File.dirname(__FILE__), 'locales', '*.{yml,rb}'))
 
-    # set default locale
+    # reset the locale
     I18n.default_locale = :en
+    I18n.locale = :en
     
     # Set up test env
     @controller = BlogPostsController.new
@@ -47,7 +48,7 @@ class TranslatorTest < ActiveSupport::TestCase
     assert_not_nil assigns
     # Test that controller could translate
     assert_equal I18n.t('blog_posts.index.title'), assigns(:page_title)
-    assert_equal I18n.translate('blog_posts.index.intro', :owner => "Ricky Rails"), assigns(:body)
+    assert_equal I18n.translate('blog_posts.index.intro', :owner => "Ricky Rails"), assigns(:intro)
   end
   
   # Test that if something that breaks convention is still processed correctly
@@ -247,6 +248,29 @@ class TranslatorTest < ActiveSupport::TestCase
     # Test that the view has the pseudo-translated strings
     copyright = I18n.t('blog_posts.footer.copyright')
     assert_match /#{start_marker + copyright + end_marker}/, @response.body
+  end
+  
+  # Test that if fallback mode is enabled, the default locale is used if
+  # the set locale can't be found
+  def test_fallback
+    # Enable fallback mode
+    Translator.fallback(true)
+    
+    # Set the locale to Spanish
+    I18n.locale = :es
+    
+    # The index action fetchs 2 keys - 1 has a Spanish translation (intro), 1 does not
+    get :index
+    assert_response :success
+    assert_not_nil assigns
+    #pp assigns
+    
+    # Test that controller could translate the intro from spanish
+    assert_equal I18n.t('blog_posts.index.intro', :owner => "Ricky Rails"), assigns(:intro)
+    
+    # Should find the English version
+    I18n.locale = :en # reset local so call to I18n pulls correct string
+    assert_equal I18n.translate('blog_posts.index.title'), assigns(:page_title)
   end
   
 end
