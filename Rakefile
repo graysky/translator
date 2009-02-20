@@ -4,7 +4,7 @@ require 'rake/testtask'
 # Use Hanna for pretty RDocs (if installed), otherwise normal rdocs
 begin
   require 'hanna/rdoctask'
-rescue Exception
+rescue LoadError
   require 'rake/rdoctask'
 end
 
