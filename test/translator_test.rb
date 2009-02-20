@@ -1,114 +1,16 @@
 require 'test_helper'
 
-# Model of a blog post, defined in schema.rb
-class BlogPost < ActiveRecord::Base
-  # Has a title, author and body
-  
-  def written_by
-    # Get sting like "Written by Ricky"
-    t('byline', :author => self.author)
-  end
-  
+# Include the models/helpers directories on the load path.
+[:models, :helpers, :controllers].each do |path|
+  $:.unshift "#{File.dirname(__FILE__)}/fixtures/app/#{path}"
 end
 
-# A mailer for new comments on the fake blog
-class BlogCommentMailer < ActionMailer::Base
-  
-  # Send email about new comments
-  def comment_notification
-    @subject = t('subject')
-  end
-end
-
-BlogCommentMailer.template_root = "#{File.dirname(__FILE__)}/fixtures/app/views"
-
-# Include the helpers directory on the load path
-$:.unshift "#{File.dirname(__FILE__)}/fixtures/app/helpers"
-
-# Stub a Blog Posts controller
-class BlogPostsController < ActionController::Base
-  
-  # Sets up view paths so tests will work
-  before_filter :fix_view_paths
-
-  # Simulate auth filter
-  before_filter :authorize, :only => [:admin]
-
-  layout "blog_layout", :only => :show_with_layout
-
-  def index
-    # Pull out sample strings for index to the fake blog
-    @page_title = t('title')
-    @body = translate(:intro, :owner => "Ricky Rails")
-    render :nothing => true, :layout => false
-  end
-  
-  def show
-    # Sample blog post
-    render :template => "blog_posts/show"
-  end
-  
-  # Render the show action with a layout
-  def show_with_layout
-    render :template => "blog_posts/show"
-  end
-  
-  # The archives action references a view helper
-  def archives
-    render :template => "blog_posts/archives"
-  end
-  
-  # View that has a key that doesn't reference a valid string
-  def missing_translation
-    render :template => "blog_posts/missing_translation"
-  end
-  
-  def different_formats
-    # Get the same tagline using the different formats
-    @taglines = []
-    @taglines << t('header.author.name') # dot-sep keys
-    @taglines << t('author.name', :scope => :header) # dot-sep keys with scope
-    @taglines << t('name', :scope => 'header.author') # string key with dot-sep scope
-    @taglines << t(:name, :scope => 'header.author') # symbol key with dot-sep score
-    @taglines << t(:name, :scope => %w(header author))
-    render :nothing => true
-  end
-  
-  # Partial template, but stored within this controller
-  def footer_partial
-    render :partial => "footer"
-  end
-  
-  # Partial that is shared across controllers
-  def header_partial
-    render :partial => "shared/header"
-  end
-
-  def admin
-    # Simulate an admin page that has a protection scheme
-  end
-  
-  def default_value
-    # Get a default value if the string isn't there
-    @title = t('not_there', :default => 'the default')
-    render :nothing => true
-  end
-  
-  protected
-  
-  # Simulate an auth system that prevents login
-  def authorize
-    # set a flash with a common message
-    flash[:error] = t('flash.invalid_login')
-    redirect_to :action => :index
-  end
-  
-  def fix_view_paths
-    # Append the view path to get the correct views/partials 
-    self.append_view_path("#{File.dirname(__FILE__)}/fixtures/app/views")
-  end
-  
-end
+# sample AR model
+require 'blog_post'
+# sample ActionMailer
+require 'blog_comment_mailer'
+# sample controller
+require 'blog_posts_controller'
 
 # Set up simple routing for testing
 ActionController::Routing::Routes.reload rescue nil
@@ -116,45 +18,18 @@ ActionController::Routing::Routes.draw do |map|
   map.connect ':controller/:action/:id'
 end
 
+# Test Translator functionality
 class TranslatorTest < ActiveSupport::TestCase
-
-  ### Test methods
 
   def setup
     # Create test locale bundle
     I18n.backend = I18n::Backend::Simple.new
     
-    ## Strings for Controllers/Views
-    I18n.backend.store_translations 'en', :blog_posts => {:index => {:title => "My Blog Posts" } }
-    I18n.backend.store_translations 'en', :blog_posts => {:index => {:intro => "Welcome to the blog of {{owner}}" } }
-    
-    # Sample post
-    I18n.backend.store_translations 'en', :blog_posts => {:show => {:title => "Catz Are Cute" } }
-    I18n.backend.store_translations 'en', :blog_posts => {:show => {:body => "My cat {{name}} is the most awesome" } }
-    
-    # To be pulled out in a view helper
-    I18n.backend.store_translations 'en', :blog_posts => {:archives => {:title => "My Blog Archives" } }
-    
-    # Fully qualified key
-    I18n.backend.store_translations 'en', :header => {:author => {:name => "Ricky Rails" } }
-    
-    # Flash messages not specific to 1 action, but within 1 controller
-    I18n.backend.store_translations 'en', :blog_posts => {:flash => {:invalid_login => "Invalid session" } }
-    
-    # Footer partial strings
-    I18n.backend.store_translations 'en', :blog_posts => {:footer => {:copyright => "Copyright 2009" } }
-    # Header partial strings
-    I18n.backend.store_translations 'en', :shared => {:header => {:blog_name => "Ricky Rocks Rails" } }
-    
-    # Strings for layout
-    I18n.backend.store_translations 'en', :layouts => {:blog_layout => {:blog_title => "The Blog of Ricky" } }
-    
-    # Strings for ActiveRecord test - convention is :model_name :method_name?
-    I18n.backend.store_translations 'en', :blog_post => {:byline => "Written by {{author}}" }
-    
-    # Strings for ActionMailer test
-    I18n.backend.store_translations 'en', :blog_comment_mailer => {:comment_notification => {:subject => "New Comment Notification" } }
-    I18n.backend.store_translations 'en', :blog_comment_mailer => {:comment_notification => {:signoff => "Your Faithful Emailing Bot" } }
+    # tell the I18n library where to find your translations
+    I18n.load_path += Dir.glob(File.join(File.dirname(__FILE__), 'locales', '*.{yml,rb}'))
+
+    # set default locale
+    I18n.default_locale = :en
     
     # Set up test env
     @controller = BlogPostsController.new
@@ -182,12 +57,11 @@ class TranslatorTest < ActiveSupport::TestCase
     assert_response :success
     assert_not_nil assigns(:taglines)
     
-    expected = "Ricky Rails"
+    expected = "Hello i18n World" # copied from en.yml
 
     assigns(:taglines).each do |str|
       assert_equal expected, str
     end
-
   end
   
   # Test call to translate with default value
@@ -374,5 +248,5 @@ class TranslatorTest < ActiveSupport::TestCase
     copyright = I18n.t('blog_posts.footer.copyright')
     assert_match /#{start_marker + copyright + end_marker}/, @response.body
   end
-      
+  
 end
