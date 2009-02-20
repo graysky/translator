@@ -31,7 +31,7 @@ end
 desc "Publish rdocs to Github on special gh-pages branch. Assumes local branch gh-pages"
 task :publish_rdoc do
   # Build the rdocs
-  safe_system("rakes rerdoc")
+  safe_system("rake rerdoc")
   move("rdoc", "rdoc-tmp")
   
   git("co gh-pages")
