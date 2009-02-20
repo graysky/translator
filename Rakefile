@@ -36,10 +36,16 @@ task :publish_rdoc do
   
   git("co gh-pages")
   # Remove existing docs
-  
+  git("rm -f --quiet rdoc")
+  move("rdoc-tmp", "rdoc")
+  # Add new ones
+  git("add .")
+  # Push the changes
+  git("commit -a -m 'updating rdocs'")
+  git("push origin HEAD")
   
   git("co master")
-    #system("open coverage/index.html") if PLATFORM['darwin']
+  #system("open coverage/index.html") if PLATFORM['darwin']
 end
 
 def git(cmd)
