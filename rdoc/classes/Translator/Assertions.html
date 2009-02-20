@@ -47,14 +47,14 @@
             <h2>Methods</h2>
             <h3>public instance</h3>
             <ol>
-              <li><a href="#M000014">assert_translated</a></li>
+              <li><a href="#M000016">assert_translated</a></li>
             </ol>
           </div>
           <div id='section'>
             <div id='methods'>
               <h2>Public instance methods</h2>
-              <div class='public-instance method' id='method-M000014'>
-                <a name='M000014'>      </a>
+              <div class='public-instance method' id='method-M000016'>
+                <a name='M000016'>      </a>
                 <div class='synopsis'>
                   <span class='name'>assert_translated</span>
                   <span class='arguments'>(msg = nil) {|| ...}</span>
@@ -70,10 +70,10 @@
                   <pre>assert_translated do&#x000A;  str = &quot;Test will fail for #{I18n.t('a_missing_key')}&quot;&#x000A;end</pre>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000014-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000016-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000014-source'>     <span class="ruby-comment cmt"># File lib/translator.rb, line 156</span>&#x000A;156:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">assert_translated</span>(<span class="ruby-identifier">msg</span> = <span class="ruby-keyword kw">nil</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;157:       &#x000A;158:       <span class="ruby-comment cmt"># Enable strict mode to force raising of MissingTranslationData</span>&#x000A;159:       <span class="ruby-constant">Translator</span>.<span class="ruby-identifier">strict_mode</span>(<span class="ruby-keyword kw">true</span>)&#x000A;160:       &#x000A;161:       <span class="ruby-identifier">msg</span> <span class="ruby-operator">||=</span> <span class="ruby-value str">&quot;Expected no missing translation keys&quot;</span>&#x000A;162:       &#x000A;163:       <span class="ruby-keyword kw">begin</span>&#x000A;164:         <span class="ruby-keyword kw">yield</span>&#x000A;165:         <span class="ruby-comment cmt"># Credtit for running the assertion</span>&#x000A;166:         <span class="ruby-identifier">assert</span>(<span class="ruby-keyword kw">true</span>, <span class="ruby-identifier">msg</span>)&#x000A;167:       <span class="ruby-keyword kw">rescue</span> <span class="ruby-constant">I18n</span><span class="ruby-operator">::</span><span class="ruby-constant">MissingTranslationData</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">e</span>&#x000A;168:         <span class="ruby-comment cmt"># Fail!</span>&#x000A;169:         <span class="ruby-identifier">assert_block</span>(<span class="ruby-identifier">build_message</span>(<span class="ruby-identifier">msg</span>, <span class="ruby-value str">&quot;Exception raised:\n?&quot;</span>, <span class="ruby-identifier">e</span>)) {<span class="ruby-keyword kw">false</span>}&#x000A;170:       <span class="ruby-keyword kw">ensure</span>&#x000A;171:         <span class="ruby-comment cmt"># uninstall strict exception handler</span>&#x000A;172:         <span class="ruby-constant">Translator</span>.<span class="ruby-identifier">strict_mode</span>(<span class="ruby-keyword kw">false</span>)&#x000A;173:       <span class="ruby-keyword kw">end</span>&#x000A;174:         &#x000A;175:     <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000016-source'>     <span class="ruby-comment cmt"># File lib/translator.rb, line 179</span>&#x000A;179:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">assert_translated</span>(<span class="ruby-identifier">msg</span> = <span class="ruby-keyword kw">nil</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;180:       &#x000A;181:       <span class="ruby-comment cmt"># Enable strict mode to force raising of MissingTranslationData</span>&#x000A;182:       <span class="ruby-constant">Translator</span>.<span class="ruby-identifier">strict_mode</span>(<span class="ruby-keyword kw">true</span>)&#x000A;183:       &#x000A;184:       <span class="ruby-identifier">msg</span> <span class="ruby-operator">||=</span> <span class="ruby-value str">&quot;Expected no missing translation keys&quot;</span>&#x000A;185:       &#x000A;186:       <span class="ruby-keyword kw">begin</span>&#x000A;187:         <span class="ruby-keyword kw">yield</span>&#x000A;188:         <span class="ruby-comment cmt"># Credtit for running the assertion</span>&#x000A;189:         <span class="ruby-identifier">assert</span>(<span class="ruby-keyword kw">true</span>, <span class="ruby-identifier">msg</span>)&#x000A;190:       <span class="ruby-keyword kw">rescue</span> <span class="ruby-constant">I18n</span><span class="ruby-operator">::</span><span class="ruby-constant">MissingTranslationData</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">e</span>&#x000A;191:         <span class="ruby-comment cmt"># Fail!</span>&#x000A;192:         <span class="ruby-identifier">assert_block</span>(<span class="ruby-identifier">build_message</span>(<span class="ruby-identifier">msg</span>, <span class="ruby-value str">&quot;Exception raised:\n?&quot;</span>, <span class="ruby-identifier">e</span>)) {<span class="ruby-keyword kw">false</span>}&#x000A;193:       <span class="ruby-keyword kw">ensure</span>&#x000A;194:         <span class="ruby-comment cmt"># uninstall strict exception handler</span>&#x000A;195:         <span class="ruby-constant">Translator</span>.<span class="ruby-identifier">strict_mode</span>(<span class="ruby-keyword kw">false</span>)&#x000A;196:       <span class="ruby-keyword kw">end</span>&#x000A;197:         &#x000A;198:     <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
             </div>

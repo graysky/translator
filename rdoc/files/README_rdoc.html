@@ -32,7 +32,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>Fri Feb 20 11:45:53 -0500 2009</span>
+          <span class='datetime'>Fri Feb 20 17:28:21 -0500 2009</span>
         </div>
       </div>
       <div id='content'>
@@ -41,9 +41,21 @@
             <h1><a href="../classes/Translator.html">Translator</a> - i18n tooling for Rails</h1>
             <p>
             <a href="../classes/Translator.html">Translator</a> makes using the
-            internationalization (i18n) facility introduced in Rails 2.2 simpler by
-            keeping your code DRY through simple conventions and makes testing easier.
+            internationalization (i18n) facility introduced in Rails 2.2 simpler
+            through:
             </p>
+            <ul>
+            <li>keeping your code DRY using simple conventions
+            
+            </li>
+            <li>make testing easier to catch missing keys
+            
+            </li>
+            <li>supplying a graceful &#8220;fallback&#8221; mode when a translation is
+            missing in a user&#8217;s locale
+            
+            </li>
+            </ul>
             <h2>The Problem</h2>
             <p>
             The (very!) helpful <a
@@ -85,7 +97,8 @@
             </p>
             <h2>Simple <tt>translate</tt> Everywhere</h2>
             <p>
-            The <tt>translate</tt> (or shorter <tt>t</tt>) method is added to:
+            <a href="../classes/Translator.html">Translator</a> adds an enhanced
+            <tt>translate</tt> (or shorter <tt>t</tt>) method to:
             </p>
             <ul>
             <li>ActionController
@@ -102,8 +115,8 @@
             </li>
             </ul>
             <p>
-            In the spirit of Rails, there is a hierarchy of keys that borrows the same
-            layout as the typical &#8220;views&#8221; directory. A sample Blog
+            In the spirit of Rails, the convention for a hierarchy of keys borrows the
+            same layout as the typical &#8220;views&#8221; directory. A sample Blog
             application is used as an example.
             </p>
             <p>
@@ -153,14 +166,26 @@
             string. This can be used to create greater levels of scoping, or to force
             finding global strings (e.g. <tt>t(&quot;global.app_name&quot;)</tt>).
             </p>
+            <h2>Graceful Locale Fallback</h2>
+            <p>
+            Let&#8217;s say you&#8217;ve extracted all your English strings, and even
+            had them translated to Spanish to make your Spanish-speaking users extra
+            happy. Then you have a brilliant idea for a new feature that needs to go
+            live before the new pages are translated into Spanish. You still want your
+            Spanish-speaking users to keep seeing the site in Spanish, but for these
+            new pages to fallback to English. (While not exactly ideal, it is better
+            than having &#8220;translation missing&#8221; messages or not externalizing
+            strings.) To enable this fallback behavior:
+            </p>
+            <pre># In the configuration&#x000A;I18n.default_locale = :en&#x000A;&#x000A;# Enable the fallback mode to try :es first, then :en&#x000A;Translator.fallback(true)&#x000A;&#x000A;# Set in the code based on user's preference, their IP address, etc.&#x000A;I18n.locale = :es&#x000A;&#x000A;# Everything else stays the same, but after Translator tries the normal scoping rules&#x000A;# in Spanish (:es), it will apply the same rules for the default locale (:en)&#x000A;t('page_title')</pre>
             <h2>Testing Help</h2>
             <ul>
             <li><tt><a
-            href="../classes/Translator.html#M000005">Translator.strict_mode</a></tt>
+            href="../classes/Translator.html#M000007">Translator.strict_mode</a></tt>
             will cause an exception to be raised for any missing translations. Enabled
             by default during testing to help find mistyped or accidently forgotten
             keys. It can be disabled by calling <tt><a
-            href="../classes/Translator.html#M000005">Translator.strict_mode(false)</a></tt>
+            href="../classes/Translator.html#M000007">Translator.strict_mode(false)</a></tt>
             (in test_helper for example).
             
             </li>
@@ -178,12 +203,12 @@
             <li>Pseudo-translation mode. Pseudo-translation wraps all extracted strings
             with leading and trailing text so that you can spot if you forgot any. It
             can be enabled by <tt><a
-            href="../classes/Translator.html#M000007">Translator.pseudo_translate</a></tt>
+            href="../classes/Translator.html#M000009">Translator.pseudo_translate</a></tt>
             (in an environment file or locale.rb for example). It does not change the
             lookup process (e.g. <tt>t('blog_title')</tt>) but will transform the
             returned string from &#8220;My Blog&#8221; to &#8220;[[ My Blog ]]&#8221;.
             The text that is prepended / appended can be set by calling <tt><a
-            href="../classes/Translator.html#M000009">Translator.pseudo_prepend</a> =
+            href="../classes/Translator.html#M000011">Translator.pseudo_prepend</a> =
             &quot;@@&quot;</tt> (or <tt>append</tt>). <b>Pro Tip:</b> This can also be
             used to see how a layout will display in a localized language that is
             longer than the default. or example, German words tend to be significantly

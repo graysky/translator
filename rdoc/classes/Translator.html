@@ -49,14 +49,16 @@
             <h2>Methods</h2>
             <h3>public class</h3>
             <ol>
-              <li><a href="#M000011">pseudo_append</a></li>
-              <li><a href="#M000012">pseudo_append=</a></li>
-              <li><a href="#M000009">pseudo_prepend</a></li>
-              <li><a href="#M000010">pseudo_prepend=</a></li>
-              <li><a href="#M000007">pseudo_translate</a></li>
-              <li><a href="#M000008">pseudo_translate?</a></li>
-              <li><a href="#M000005">strict_mode</a></li>
-              <li><a href="#M000006">strict_mode?</a></li>
+              <li><a href="#M000005">fallback</a></li>
+              <li><a href="#M000006">fallback?</a></li>
+              <li><a href="#M000013">pseudo_append</a></li>
+              <li><a href="#M000014">pseudo_append=</a></li>
+              <li><a href="#M000011">pseudo_prepend</a></li>
+              <li><a href="#M000012">pseudo_prepend=</a></li>
+              <li><a href="#M000009">pseudo_translate</a></li>
+              <li><a href="#M000010">pseudo_translate?</a></li>
+              <li><a href="#M000007">strict_mode</a></li>
+              <li><a href="#M000008">strict_mode?</a></li>
               <li><a href="#M000004">translate_with_scope</a></li>
             </ol>
           </div>
@@ -73,15 +75,56 @@
                   <tr class='top-aligned-row context-row'>
                     <td class='context-item-name'>VERSION</td>
                     <td>=</td>
-                    <td class='context-item-value'>'0.5.5'</td>
+                    <td class='context-item-value'>'0.6.0'</td>
                   </tr>
                 </table>
               </div>
             </div>
             <div id='methods'>
               <h2>Public class methods</h2>
-              <div class='public-class method' id='method-M000011'>
-                <a name='M000011'>      </a>
+              <div class='public-class method' id='method-M000005'>
+                <a name='M000005'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>fallback</span>
+                  <span class='arguments'>(enable = true)</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  When fallback mode is enabled if a key cannot be found in the set locale,
+                  it uses the default locale. So, for example, if an app is mostly localized
+                  to Spanish (:es), but a new page is added then Spanish users will continue
+                  to see mostly Spanish content but the English version (assuming the
+                  <tt>default_locale</tt> is :en) for the new page that has not yet been
+                  translated to Spanish.
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000005-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000005-source'>     <span class="ruby-comment cmt"># File lib/translator.rb, line 103</span>&#x000A;103:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">fallback</span>(<span class="ruby-identifier">enable</span> = <span class="ruby-keyword kw">true</span>)&#x000A;104:     <span class="ruby-ivar">@@fallback_mode</span> = <span class="ruby-identifier">enable</span>&#x000A;105:   <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-class method' id='method-M000006'>
+                <a name='M000006'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>fallback?</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  If fallback mode is enabled
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000006-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000006-source'>     <span class="ruby-comment cmt"># File lib/translator.rb, line 108</span>&#x000A;108:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">fallback?</span>&#x000A;109:     <span class="ruby-ivar">@@fallback_mode</span>&#x000A;110:   <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-class method' id='method-M000013'>
+                <a name='M000013'>      </a>
                 <div class='synopsis'>
                   <span class='name'>pseudo_append</span>
                   <span class='arguments'>()</span>
@@ -93,14 +136,14 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000011-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000013-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000011-source'>     <span class="ruby-comment cmt"># File lib/translator.rb, line 135</span>&#x000A;135:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">pseudo_append</span>&#x000A;136:     <span class="ruby-ivar">@@pseudo_append</span>&#x000A;137:   <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000013-source'>     <span class="ruby-comment cmt"># File lib/translator.rb, line 158</span>&#x000A;158:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">pseudo_append</span>&#x000A;159:     <span class="ruby-ivar">@@pseudo_append</span>&#x000A;160:   <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='public-class method' id='method-M000012'>
-                <a name='M000012'>      </a>
+              <div class='public-class method' id='method-M000014'>
+                <a name='M000014'>      </a>
                 <div class='synopsis'>
                   <span class='name'>pseudo_append=</span>
                   <span class='arguments'>(v)</span>
@@ -112,14 +155,14 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000012-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000014-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000012-source'>     <span class="ruby-comment cmt"># File lib/translator.rb, line 141</span>&#x000A;141:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">pseudo_append=</span>(<span class="ruby-identifier">v</span>)&#x000A;142:     <span class="ruby-ivar">@@pseudo_append</span> = <span class="ruby-identifier">v</span>&#x000A;143:   <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000014-source'>     <span class="ruby-comment cmt"># File lib/translator.rb, line 164</span>&#x000A;164:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">pseudo_append=</span>(<span class="ruby-identifier">v</span>)&#x000A;165:     <span class="ruby-ivar">@@pseudo_append</span> = <span class="ruby-identifier">v</span>&#x000A;166:   <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='public-class method' id='method-M000009'>
-                <a name='M000009'>      </a>
+              <div class='public-class method' id='method-M000011'>
+                <a name='M000011'>      </a>
                 <div class='synopsis'>
                   <span class='name'>pseudo_prepend</span>
                   <span class='arguments'>()</span>
@@ -131,14 +174,14 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000009-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000011-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000009-source'>     <span class="ruby-comment cmt"># File lib/translator.rb, line 123</span>&#x000A;123:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">pseudo_prepend</span>&#x000A;124:     <span class="ruby-ivar">@@pseudo_prepend</span>&#x000A;125:   <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000011-source'>     <span class="ruby-comment cmt"># File lib/translator.rb, line 146</span>&#x000A;146:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">pseudo_prepend</span>&#x000A;147:     <span class="ruby-ivar">@@pseudo_prepend</span>&#x000A;148:   <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='public-class method' id='method-M000010'>
-                <a name='M000010'>      </a>
+              <div class='public-class method' id='method-M000012'>
+                <a name='M000012'>      </a>
                 <div class='synopsis'>
                   <span class='name'>pseudo_prepend=</span>
                   <span class='arguments'>(v)</span>
@@ -150,14 +193,14 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000010-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000012-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000010-source'>     <span class="ruby-comment cmt"># File lib/translator.rb, line 129</span>&#x000A;129:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">pseudo_prepend=</span>(<span class="ruby-identifier">v</span>)&#x000A;130:     <span class="ruby-ivar">@@pseudo_prepend</span> = <span class="ruby-identifier">v</span>&#x000A;131:   <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000012-source'>     <span class="ruby-comment cmt"># File lib/translator.rb, line 152</span>&#x000A;152:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">pseudo_prepend=</span>(<span class="ruby-identifier">v</span>)&#x000A;153:     <span class="ruby-ivar">@@pseudo_prepend</span> = <span class="ruby-identifier">v</span>&#x000A;154:   <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='public-class method' id='method-M000007'>
-                <a name='M000007'>      </a>
+              <div class='public-class method' id='method-M000009'>
+                <a name='M000009'>      </a>
                 <div class='synopsis'>
                   <span class='name'>pseudo_translate</span>
                   <span class='arguments'>(enable = true)</span>
@@ -171,14 +214,14 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000007-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000009-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000007-source'>     <span class="ruby-comment cmt"># File lib/translator.rb, line 112</span>&#x000A;112:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">pseudo_translate</span>(<span class="ruby-identifier">enable</span> = <span class="ruby-keyword kw">true</span>)&#x000A;113:     <span class="ruby-ivar">@@pseudo_translate</span> = <span class="ruby-identifier">enable</span>&#x000A;114:   <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000009-source'>     <span class="ruby-comment cmt"># File lib/translator.rb, line 135</span>&#x000A;135:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">pseudo_translate</span>(<span class="ruby-identifier">enable</span> = <span class="ruby-keyword kw">true</span>)&#x000A;136:     <span class="ruby-ivar">@@pseudo_translate</span> = <span class="ruby-identifier">enable</span>&#x000A;137:   <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='public-class method' id='method-M000008'>
-                <a name='M000008'>      </a>
+              <div class='public-class method' id='method-M000010'>
+                <a name='M000010'>      </a>
                 <div class='synopsis'>
                   <span class='name'>pseudo_translate?</span>
                   <span class='arguments'>()</span>
@@ -189,14 +232,14 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000008-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000010-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000008-source'>     <span class="ruby-comment cmt"># File lib/translator.rb, line 117</span>&#x000A;117:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">pseudo_translate?</span>&#x000A;118:     <span class="ruby-ivar">@@pseudo_translate</span>&#x000A;119:   <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000010-source'>     <span class="ruby-comment cmt"># File lib/translator.rb, line 140</span>&#x000A;140:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">pseudo_translate?</span>&#x000A;141:     <span class="ruby-ivar">@@pseudo_translate</span>&#x000A;142:   <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='public-class method' id='method-M000005'>
-                <a name='M000005'>      </a>
+              <div class='public-class method' id='method-M000007'>
+                <a name='M000007'>      </a>
                 <div class='synopsis'>
                   <span class='name'>strict_mode</span>
                   <span class='arguments'>(enable_strict = true)</span>
@@ -211,14 +254,14 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000005-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000007-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000005-source'>     <span class="ruby-comment cmt"># File lib/translator.rb, line 93</span>&#x000A; 93:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">strict_mode</span>(<span class="ruby-identifier">enable_strict</span> = <span class="ruby-keyword kw">true</span>)&#x000A; 94:     <span class="ruby-ivar">@@strict_mode</span> = <span class="ruby-identifier">enable_strict</span>&#x000A; 95:     &#x000A; 96:     <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">enable_strict</span>&#x000A; 97:       <span class="ruby-comment cmt"># Switch to using contributed exception handler</span>&#x000A; 98:       <span class="ruby-constant">I18n</span>.<span class="ruby-identifier">exception_handler</span> = <span class="ruby-identifier">:strict_i18n_exception_handler</span>&#x000A; 99:     <span class="ruby-keyword kw">else</span>&#x000A;100:       <span class="ruby-constant">I18n</span>.<span class="ruby-identifier">exception_handler</span> = <span class="ruby-identifier">:default_exception_handler</span>&#x000A;101:     <span class="ruby-keyword kw">end</span>&#x000A;102:   <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000007-source'>     <span class="ruby-comment cmt"># File lib/translator.rb, line 116</span>&#x000A;116:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">strict_mode</span>(<span class="ruby-identifier">enable_strict</span> = <span class="ruby-keyword kw">true</span>)&#x000A;117:     <span class="ruby-ivar">@@strict_mode</span> = <span class="ruby-identifier">enable_strict</span>&#x000A;118:     &#x000A;119:     <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">enable_strict</span>&#x000A;120:       <span class="ruby-comment cmt"># Switch to using contributed exception handler</span>&#x000A;121:       <span class="ruby-constant">I18n</span>.<span class="ruby-identifier">exception_handler</span> = <span class="ruby-identifier">:strict_i18n_exception_handler</span>&#x000A;122:     <span class="ruby-keyword kw">else</span>&#x000A;123:       <span class="ruby-constant">I18n</span>.<span class="ruby-identifier">exception_handler</span> = <span class="ruby-identifier">:default_exception_handler</span>&#x000A;124:     <span class="ruby-keyword kw">end</span>&#x000A;125:   <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='public-class method' id='method-M000006'>
-                <a name='M000006'>      </a>
+              <div class='public-class method' id='method-M000008'>
+                <a name='M000008'>      </a>
                 <div class='synopsis'>
                   <span class='name'>strict_mode?</span>
                   <span class='arguments'>()</span>
@@ -229,10 +272,10 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000006-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000008-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000006-source'>     <span class="ruby-comment cmt"># File lib/translator.rb, line 105</span>&#x000A;105:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">strict_mode?</span>&#x000A;106:     <span class="ruby-ivar">@@strict_mode</span>&#x000A;107:   <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000008-source'>     <span class="ruby-comment cmt"># File lib/translator.rb, line 128</span>&#x000A;128:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">strict_mode?</span>&#x000A;129:     <span class="ruby-ivar">@@strict_mode</span>&#x000A;130:   <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
               <div class='public-class method' id='method-M000004'>
@@ -286,7 +329,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('M000004-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000004-source'>    <span class="ruby-comment cmt"># File lib/translator.rb, line 42</span>&#x000A;42:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">translate_with_scope</span>(<span class="ruby-identifier">scope</span>, <span class="ruby-identifier">key</span>, <span class="ruby-identifier">options</span>={})&#x000A;43:     <span class="ruby-comment cmt"># Keep the original options clean</span>&#x000A;44:     <span class="ruby-identifier">scoped_options</span> = {}.<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">options</span>)&#x000A;45:     &#x000A;46:     <span class="ruby-comment cmt"># From RDoc: </span>&#x000A;47:     <span class="ruby-comment cmt"># Scope can be either a single key, a dot-separated key or an array of keys or dot-separated keys</span>&#x000A;48:     <span class="ruby-identifier">scope</span> <span class="ruby-operator">||=</span> [] <span class="ruby-comment cmt"># guard against nil scope</span>&#x000A;49:     &#x000A;50:     <span class="ruby-comment cmt"># Convert the scopes to list of symbols and ignore anything</span>&#x000A;51:     <span class="ruby-comment cmt"># that cannot be converted</span>&#x000A;52:     <span class="ruby-identifier">scope</span>.<span class="ruby-identifier">map!</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">e</span><span class="ruby-operator">|</span> <span class="ruby-identifier">e</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-identifier">:to_sym</span>) <span class="ruby-operator">?</span> <span class="ruby-identifier">e</span>.<span class="ruby-identifier">to_sym</span> <span class="ruby-operator">:</span> <span class="ruby-keyword kw">nil</span> }&#x000A;53:     <span class="ruby-identifier">scope</span>.<span class="ruby-identifier">compact!</span> <span class="ruby-comment cmt"># clear any nil values</span>&#x000A;54:     &#x000A;55:     <span class="ruby-comment cmt"># Raise to know if the key was found</span>&#x000A;56:     <span class="ruby-identifier">scoped_options</span>[<span class="ruby-identifier">:raise</span>] = <span class="ruby-keyword kw">true</span>&#x000A;57:     &#x000A;58:     <span class="ruby-comment cmt"># Remove any default value when searching with scope</span>&#x000A;59:     <span class="ruby-identifier">scoped_options</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">:default</span>)&#x000A;60:     &#x000A;61:     <span class="ruby-identifier">str</span> = <span class="ruby-keyword kw">nil</span> <span class="ruby-comment cmt"># the string being looked for</span>&#x000A;62:     &#x000A;63:     <span class="ruby-comment cmt"># Loop through each scope until a string is found.</span>&#x000A;64:     <span class="ruby-comment cmt"># Example: starts with scope of [:blog_posts :show] then tries scope [:blog_posts] then original</span>&#x000A;65:     <span class="ruby-keyword kw">while</span> <span class="ruby-operator">!</span><span class="ruby-identifier">scope</span>.<span class="ruby-identifier">empty?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">str</span>.<span class="ruby-identifier">nil?</span>&#x000A;66:       <span class="ruby-comment cmt"># Set scope to use for search</span>&#x000A;67:       <span class="ruby-identifier">scoped_options</span>[<span class="ruby-identifier">:scope</span>] = <span class="ruby-identifier">scope</span>&#x000A;68:     &#x000A;69:       <span class="ruby-keyword kw">begin</span>&#x000A;70:         <span class="ruby-comment cmt"># try to find key within scope</span>&#x000A;71:         <span class="ruby-identifier">str</span> = <span class="ruby-constant">I18n</span>.<span class="ruby-identifier">translate</span>(<span class="ruby-identifier">key</span>, <span class="ruby-identifier">scoped_options</span>)&#x000A;72:       <span class="ruby-keyword kw">rescue</span> <span class="ruby-constant">I18n</span><span class="ruby-operator">::</span><span class="ruby-constant">MissingTranslationData</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">exc</span>&#x000A;73:         <span class="ruby-comment cmt"># did not find the string, remove a layer of scoping (if possible)</span>&#x000A;74:         <span class="ruby-identifier">scope</span>.<span class="ruby-identifier">pop</span>&#x000A;75:       <span class="ruby-keyword kw">end</span>&#x000A;76:     <span class="ruby-keyword kw">end</span>&#x000A;77:     &#x000A;78:     <span class="ruby-comment cmt"># If a string was not found yet, fall back to trying original request</span>&#x000A;79:     <span class="ruby-identifier">str</span> <span class="ruby-operator">||=</span> <span class="ruby-constant">I18n</span>.<span class="ruby-identifier">translate</span>(<span class="ruby-identifier">key</span>, <span class="ruby-identifier">options</span>)&#x000A;80:     &#x000A;81:     <span class="ruby-comment cmt"># If pseudo-translating, prepend / append marker text</span>&#x000A;82:     <span class="ruby-keyword kw">if</span> <span class="ruby-constant">Translator</span>.<span class="ruby-identifier">pseudo_translate?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-operator">!</span><span class="ruby-identifier">str</span>.<span class="ruby-identifier">nil?</span>&#x000A;83:       <span class="ruby-identifier">str</span> = <span class="ruby-constant">Translator</span>.<span class="ruby-identifier">pseudo_prepend</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">str</span> <span class="ruby-operator">+</span> <span class="ruby-constant">Translator</span>.<span class="ruby-identifier">pseudo_append</span>&#x000A;84:     <span class="ruby-keyword kw">end</span>&#x000A;85:     &#x000A;86:     <span class="ruby-identifier">str</span>&#x000A;87:   <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000004-source'>    <span class="ruby-comment cmt"># File lib/translator.rb, line 45</span>&#x000A;45:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">translate_with_scope</span>(<span class="ruby-identifier">scope</span>, <span class="ruby-identifier">key</span>, <span class="ruby-identifier">options</span>={})&#x000A;46:     <span class="ruby-identifier">scope</span> <span class="ruby-operator">||=</span> [] <span class="ruby-comment cmt"># guard against nil scope</span>&#x000A;47:     &#x000A;48:     <span class="ruby-comment cmt"># Keep the original options clean</span>&#x000A;49:     <span class="ruby-identifier">original_scope</span> = <span class="ruby-identifier">scope</span>.<span class="ruby-identifier">dup</span>&#x000A;50:     <span class="ruby-identifier">scoped_options</span> = {}.<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">options</span>)&#x000A;51:     &#x000A;52:     <span class="ruby-comment cmt"># Convert the scopes to list of symbols and ignore anything</span>&#x000A;53:     <span class="ruby-comment cmt"># that cannot be converted</span>&#x000A;54:     <span class="ruby-identifier">scope</span>.<span class="ruby-identifier">map!</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">e</span><span class="ruby-operator">|</span> <span class="ruby-identifier">e</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-identifier">:to_sym</span>) <span class="ruby-operator">?</span> <span class="ruby-identifier">e</span>.<span class="ruby-identifier">to_sym</span> <span class="ruby-operator">:</span> <span class="ruby-keyword kw">nil</span> }&#x000A;55:     <span class="ruby-identifier">scope</span>.<span class="ruby-identifier">compact!</span> <span class="ruby-comment cmt"># clear any nil values</span>&#x000A;56:     &#x000A;57:     <span class="ruby-comment cmt"># Raise to know if the key was found</span>&#x000A;58:     <span class="ruby-identifier">scoped_options</span>[<span class="ruby-identifier">:raise</span>] = <span class="ruby-keyword kw">true</span>&#x000A;59:     &#x000A;60:     <span class="ruby-comment cmt"># Remove any default value when searching with scope</span>&#x000A;61:     <span class="ruby-identifier">scoped_options</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">:default</span>)&#x000A;62:     &#x000A;63:     <span class="ruby-identifier">str</span> = <span class="ruby-keyword kw">nil</span> <span class="ruby-comment cmt"># the string being looked for</span>&#x000A;64:     &#x000A;65:     <span class="ruby-comment cmt"># Loop through each scope until a string is found.</span>&#x000A;66:     <span class="ruby-comment cmt"># Example: starts with scope of [:blog_posts :show] then tries scope [:blog_posts] then </span>&#x000A;67:     <span class="ruby-comment cmt"># without automatically added scope.</span>&#x000A;68:     <span class="ruby-keyword kw">while</span> <span class="ruby-operator">!</span><span class="ruby-identifier">scope</span>.<span class="ruby-identifier">empty?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">str</span>.<span class="ruby-identifier">nil?</span>&#x000A;69:       <span class="ruby-comment cmt"># Set scope to use for search</span>&#x000A;70:       <span class="ruby-identifier">scoped_options</span>[<span class="ruby-identifier">:scope</span>] = <span class="ruby-identifier">scope</span>&#x000A;71:     &#x000A;72:       <span class="ruby-keyword kw">begin</span>&#x000A;73:         <span class="ruby-comment cmt"># try to find key within scope</span>&#x000A;74:         <span class="ruby-identifier">str</span> = <span class="ruby-constant">I18n</span>.<span class="ruby-identifier">translate</span>(<span class="ruby-identifier">key</span>, <span class="ruby-identifier">scoped_options</span>)&#x000A;75:       <span class="ruby-keyword kw">rescue</span> <span class="ruby-constant">I18n</span><span class="ruby-operator">::</span><span class="ruby-constant">MissingTranslationData</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">exc</span>&#x000A;76:         <span class="ruby-comment cmt"># did not find the string, remove a layer of scoping (if possible)</span>&#x000A;77:         <span class="ruby-identifier">scope</span>.<span class="ruby-identifier">pop</span>&#x000A;78:       <span class="ruby-keyword kw">end</span>&#x000A;79:     <span class="ruby-keyword kw">end</span>&#x000A;80:     &#x000A;81:     <span class="ruby-comment cmt"># If a string is not yet found, potentially check the default locale if in fallback mode.</span>&#x000A;82:     <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">str</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-constant">Translator</span>.<span class="ruby-identifier">fallback?</span> <span class="ruby-operator">&amp;&amp;</span> (<span class="ruby-constant">I18n</span>.<span class="ruby-identifier">locale</span> <span class="ruby-operator">!=</span> <span class="ruby-constant">I18n</span>.<span class="ruby-identifier">default_locale</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:locale</span>].<span class="ruby-identifier">nil?</span>&#x000A;83:       <span class="ruby-comment cmt"># Recurse original request, but in the context of the default locale</span>&#x000A;84:       <span class="ruby-identifier">str</span> <span class="ruby-operator">||=</span> <span class="ruby-constant">Translator</span>.<span class="ruby-identifier">translate_with_scope</span>(<span class="ruby-identifier">original_scope</span>, <span class="ruby-identifier">key</span>, <span class="ruby-identifier">options</span>.<span class="ruby-identifier">merge</span>({<span class="ruby-identifier">:locale</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">I18n</span>.<span class="ruby-identifier">default_locale</span>}))&#x000A;85:     <span class="ruby-keyword kw">end</span>&#x000A;86:     &#x000A;87:     <span class="ruby-comment cmt"># If a string was still not found, fall back to trying original request (gets default behavior)</span>&#x000A;88:     <span class="ruby-identifier">str</span> <span class="ruby-operator">||=</span> <span class="ruby-constant">I18n</span>.<span class="ruby-identifier">translate</span>(<span class="ruby-identifier">key</span>, <span class="ruby-identifier">options</span>)&#x000A;89:     &#x000A;90:     <span class="ruby-comment cmt"># If pseudo-translating, prepend / append marker text</span>&#x000A;91:     <span class="ruby-keyword kw">if</span> <span class="ruby-constant">Translator</span>.<span class="ruby-identifier">pseudo_translate?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-operator">!</span><span class="ruby-identifier">str</span>.<span class="ruby-identifier">nil?</span>&#x000A;92:       <span class="ruby-identifier">str</span> = <span class="ruby-constant">Translator</span>.<span class="ruby-identifier">pseudo_prepend</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">str</span> <span class="ruby-operator">+</span> <span class="ruby-constant">Translator</span>.<span class="ruby-identifier">pseudo_append</span>&#x000A;93:     <span class="ruby-keyword kw">end</span>&#x000A;94:     &#x000A;95:     <span class="ruby-identifier">str</span>&#x000A;96:   <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
             </div>
