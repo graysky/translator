@@ -36,7 +36,7 @@ task :publish_rdoc do
   
   git("co gh-pages")
   # Remove existing docs
-  git("rm -f --quiet rdoc")
+  git("rm -rf --quiet rdoc")
   move("rdoc-tmp", "rdoc")
   # Add new ones
   git("add .")
