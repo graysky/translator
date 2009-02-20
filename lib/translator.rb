@@ -4,10 +4,21 @@ require 'action_view/helpers/translation_helper'
 # Extentions to make internationalization (i18n) of a Rails application simpler. 
 # Support the method +translate+ (or shorter +t+) in models/view/controllers/mailers.
 module Translator
-  VERSION = '0.5.0'
+  VERSION = '0.5.5'
   
   # Whether strict mode is enabled
   @@strict_mode = false
+  
+  # Whether to pseudo-translate all fetched strings
+  @@pseudo_translate = false
+  
+  # Pseudo-translation text to prend to fetched strings.
+  # Used as a visible marker. Default is "[["
+  @@pseudo_prepend = "[[ "
+  
+  # Pseudo-translation text to append to fetched strings.
+  # Used as a visible marker. Default is "]]"
+  @@pseudo_append = " ]]"
   
   # Performs lookup with a given scope. The scope should be an array of strings or symbols
   # ordered from highest to lowest scoping. For example, for a given PicturesController 
@@ -66,6 +77,13 @@ module Translator
     
     # If a string was not found yet, fall back to trying original request
     str ||= I18n.translate(key, options)
+    
+    # If pseudo-translating, prepend / append marker text
+    if Translator.pseudo_translate? && !str.nil?
+      str = Translator.pseudo_prepend + str + Translator.pseudo_append
+    end
+    
+    str
   end
   
   # Toggle whether to true an exception on *all* +MissingTranslationData+ exceptions
@@ -86,6 +104,42 @@ module Translator
   # Get if it is in strict mode
   def self.strict_mode?
     @@strict_mode
+  end
+  
+  # Toggle a pseudo-translation mode that will prepend / append special text
+  # to all fetched strings. This is useful during testing to view pages and visually
+  # confirm that strings have been fully extracted into locale bundles.
+  def self.pseudo_translate(enable = true)
+    @@pseudo_translate = enable
+  end
+  
+  # If pseudo-translated is enabled
+  def self.pseudo_translate?
+    @@pseudo_translate
+  end
+  
+  # Pseudo-translation text to prepend to fetched strings.
+  # Used as a visible marker. Default is "[["
+  def self.pseudo_prepend
+    @@pseudo_prepend
+  end
+  
+  # Set the pseudo-translation text to prepend to fetched strings.
+  # Used as a visible marker.
+  def self.pseudo_prepend=(v)
+    @@pseudo_prepend = v
+  end
+
+  # Pseudo-translation text to append to fetched strings.
+  # Used as a visible marker. Default is "]]"
+  def self.pseudo_append
+    @@pseudo_append
+  end
+  
+  # Set the pseudo-translation text to append to fetched strings.
+  # Used as a visible marker.
+  def self.pseudo_append=(v)
+    @@pseudo_append = v
   end
   
   # Additions to TestUnit to make testing i18n easier

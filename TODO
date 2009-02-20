@@ -9,10 +9,6 @@ Testing
 
 - More readable translation assertion like: assert_match_translation full-key, text, error_msg
 
-- Pseudo-translating tool. If enabled, override default behavior to:
--- raise exception on missing translation
--- prepend/append markers to confirm that strings are externalized
-
 - rake task to find missing keys (started on branch)
 
 Refactor

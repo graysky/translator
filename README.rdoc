@@ -23,6 +23,10 @@ To install this plugin into your Rails app (2.2 or later):
 
   ./script/plugin install git://github.com/graysky/translator.git
 
+== RDocs
+
+{The RDocs are online}[http://graysky.github.com/translator/rdoc/index.html] or can be generated via <tt>rake rdoc</tt> in the translator plugin directory.
+
 == Simple +translate+ Everywhere
 
 The +translate+ (or shorter +t+) method is added to:
@@ -91,9 +95,9 @@ Translator will first look for "blog_posts.show.error.permission_denied", which 
 "blog_posts.errors.permission_denied" and return the correct string. This can be used to create greater levels of scoping, or to force finding 
 global strings (ex. <tt>t("global.app_name")</tt>).
 
-== Test Helpers
+== Testing Help
 
-* <tt>Translator.strict_mode</tt> will cause an exception to be raised for any missing translations. Enabled by default during testing to help find key accidently forgotten. It can be disabled by calling <tt>Translator.strict_mode(false)</tt> (like in a test helper), but it can help catch typos.
+* <tt>Translator.strict_mode</tt> will cause an exception to be raised for any missing translations. Enabled by default during testing to help find mistyped or accidently forgotten keys. It can be disabled by calling <tt>Translator.strict_mode(false)</tt> (in test_helper for example).
 * <tt>assert_translated</tt> takes a block and asserts that all lookups within that block have real translations. It is a more targeted version of <tt>strict_mode</tt>. Example:
 
     assert_translated do
@@ -108,9 +112,7 @@ global strings (ex. <tt>t("global.app_name")</tt>).
     # the byline should be in the body - uses @controller to make lookup easy (automatically knows controller name and action)
     assert_match @controller.t('byline', :name => "Mike"), @response.body
 
-== RDoc API
-
-{The RDocs are online}[http://graysky.github.com/translator/rdoc/index.html] or can be generated via <tt>rake rdoc</tt> in the translator plugin directory.
+* Pseudo-translation mode. Pseudo-translation wraps all strings with leading and trailing text so that you can spot if you forgot to extract strings. It can be enabled by <tt>Translator.pseudo_translate</tt> (in an environment file or locale.rb for example). It does not change the lookup process but will change a string like "My Blog" to "[[ My Blog ]]". The text that is prepended / appended can be set by calling <tt>Translator.pseudo_prepend = "@@"</tt> (or +append+). <b>Pro Tip:</b> This can also be used to see how a layout will display in a localized language that is longer than the default. For example, German is often significantly more verbose than English. By padding all strings you can test how a layout will adapt and make changes.
 
 
 Bug reports welcome. {Patches very welcome}[http://github.com/graysky/translator].

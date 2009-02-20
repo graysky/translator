@@ -302,7 +302,6 @@ class TranslatorTest < ActiveSupport::TestCase
   
   # Test that a model's method can call translate
   def test_model_calling_translate
-    
     post = nil
     author = "Ricky"
     assert_nothing_raised do
@@ -343,6 +342,37 @@ class TranslatorTest < ActiveSupport::TestCase
     assert_nothing_raised do
       str = "Exception should not be raised #{I18n.t('the_missing_key')}"
     end
+  end
+  
+  # Test that marker text appears in when using pseudo-translation
+  def test_pseudo_translate
+    Translator.pseudo_translate(true)
+    
+    # Create a blog post that uses translate to create a byline
+    blog_post = BlogPost.create!(:author => "Ricky")
+    assert_not_nil blog_post
+    
+    assert_match Translator.pseudo_prepend, blog_post.written_by, "Should start with prepend text"
+    assert_match Translator.pseudo_append, blog_post.written_by, "Should end with append text"
+  end
+  
+  # Test that markers can be changed
+  def test_pseudo_translate_with_diff_markers
+    Translator.pseudo_translate(true)
+    
+    start_marker = "!!"
+    end_marker = "%%"
+    
+    # Set the new markers
+    Translator.pseudo_prepend = start_marker
+    Translator.pseudo_append = end_marker
+    
+    get :footer_partial
+    assert_response :success
+
+    # Test that the view has the pseudo-translated strings
+    copyright = I18n.t('blog_posts.footer.copyright')
+    assert_match /#{start_marker + copyright + end_marker}/, @response.body
   end
       
 end
