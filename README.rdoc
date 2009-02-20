@@ -1,13 +1,11 @@
 = Translator - i18n tooling for Rails
 
-Translator make using the internationalization (i18n) facility introduced in Rails 2.2 simpler by keeping your code DRY through simple conventions, 
+Translator makes using the internationalization (i18n) facility introduced in Rails 2.2 simpler by keeping your code DRY through simple conventions
 and makes testing easier.
 
 == The Problem
 
-The (very!) helpful I18n[http://api.rubyonrails.org/classes/I18n.html] library finds keys in locale bundles, but doesn't know anything about Rails applications. Applications that have a lot of strings need a system of keeping them organized. This can lead to write code that makes you repeat yourself again and again about which key to find.
-
-Translator adds smarts to controllers, views, models & mailers to know the context of the request to find a key. Translator defines a convention for the hierarchy of keys within locale bundles that makes it simpler to code and maintain, while still getting all the benefits of the underlying I18n library. (Note: Translator does not care how the actual yml files are stored in the filesystem.)
+The (very!) helpful I18n[http://api.rubyonrails.org/classes/I18n.html] library finds keys in locale bundles (and more), but doesn't know anything about Rails applications. Applications that have a lot of strings need a system of keeping them organized. Translator adds smarts to controllers, views, models & mailers to follow a simple convention when finding keys. Having a convention for the hierarchy of keys within locale bundles that makes it easier to code and maintain, while still using the capabilities of the underlying I18n library. (Note: Translator does not depend on how the actual YAML/Ruby files are stored in the filesystem.)
 
 Quick example - if you follow the key convention of structuring your locale bundle like:
   blog_posts: # controller
@@ -15,7 +13,7 @@ Quick example - if you follow the key convention of structuring your locale bund
       title: "My Awesome Blog Post"
       byline: "Written by {{author}}"
 
-Then when writing the <tt>BlogPostsController.show</tt> action you can just use <tt>t('title')</tt> to fetch the string (equivalent to <tt>I18n.translate('blog_posts.show.title')</tt>). Similarly, in the <tt>show.erb</tt> template you can get use <tt>t('byline', :author => "Mike")</tt>. This extends to Models and Mailers as well. As they say, "Look at all the things I'm not doing!"
+Then when writing the <tt>BlogPostsController.show</tt> action you can just use <tt>t('title')</tt> to fetch the string (equivalent to <tt>I18n.translate('blog_posts.show.title')</tt>). Similarly, in the <tt>show.erb</tt> template you can get use <tt>t('byline', :author => "Mike")</tt>. This extends to models and mailers as well. As they say, "Look at all the things I'm not doing!"
 
 == Plugin Installation
 
@@ -79,21 +77,21 @@ For models it is:
 === Key Lookup
 
 When a key is looked up, Translator adds extra scoping to the lookup based on where it is called from. For:
-* Controllers & Views the scope includes <tt>[:controller_name, :action_name]</tt>. (For shared partials it is <tt>[:template_path, :partial_name]</tt>)
+* Controllers & views the scope includes <tt>[:controller_name, :action_name]</tt>. (For shared partials it is <tt>[:template_path, :partial_name]</tt>)
 * Mailers the scope includes <tt>[:mailer_name, :method_name]</tt>
 * Models the scope includes <tt>[:model_name]</tt>
 
-But what happens when if you want to share strings across a controller? Let's say you have error messages that are set in flash notices
+But what happens if you want to share strings across a controller? Let's say you have error messages that are set in flash notices
 and then are shared between actions in a controller defined in the locale bundle like:
   blog_posts:
     errors:
       permission_denied: "Permission denied to read this blog post"
 
 If Translator doesn't find the original key, it will remove a layer of scoping and try again.
-So if in our Blogs controller +show+ action we want to set a <tt>flash[:error]</tt> to a permission denied message it can find the string by calling <tt>t('error.permission_denied')</tt>.
-Translator will first look for "blog_posts.show.error.permission_denied", which doesn't exist. So it will then try to find 
+So if in our Blogs controller +show+ action we want to set a <tt>flash[:error]</tt> to a permission denied message it can find the string by calling <tt>t('errors.permission_denied')</tt>.
+Translator will first look for "blog_posts.show.errors.permission_denied", which doesn't exist. So it will then try to find 
 "blog_posts.errors.permission_denied" and return the correct string. This can be used to create greater levels of scoping, or to force finding 
-global strings (ex. <tt>t("global.app_name")</tt>).
+global strings (e.g. <tt>t("global.app_name")</tt>).
 
 == Testing Help
 
@@ -112,7 +110,7 @@ global strings (ex. <tt>t("global.app_name")</tt>).
     # the byline should be in the body - uses @controller to make lookup easy (automatically knows controller name and action)
     assert_match @controller.t('byline', :name => "Mike"), @response.body
 
-* Pseudo-translation mode. Pseudo-translation wraps all strings with leading and trailing text so that you can spot if you forgot to extract strings. It can be enabled by <tt>Translator.pseudo_translate</tt> (in an environment file or locale.rb for example). It does not change the lookup process but will change a string like "My Blog" to "[[ My Blog ]]". The text that is prepended / appended can be set by calling <tt>Translator.pseudo_prepend = "@@"</tt> (or +append+). <b>Pro Tip:</b> This can also be used to see how a layout will display in a localized language that is longer than the default. For example, German is often significantly more verbose than English. By padding all strings you can test how a layout will adapt and make changes.
+* Pseudo-translation mode. Pseudo-translation wraps all extracted strings with leading and trailing text so that you can spot if you forgot any. It can be enabled by <tt>Translator.pseudo_translate</tt> (in an environment file or locale.rb for example). It does not change the lookup process (e.g. <tt>t('blog_title')</tt>) but will transform the returned string from "My Blog" to "[[ My Blog ]]". The text that is prepended / appended can be set by calling <tt>Translator.pseudo_prepend = "@@"</tt> (or +append+). <b>Pro Tip:</b> This can also be used to see how a layout will display in a localized language that is longer than the default. or example, German words tend to be significantly longer than their English equivalents. By padding all strings you can test how a layout will adapt and make changes.
 
 
 Bug reports welcome. {Patches very welcome}[http://github.com/graysky/translator].
