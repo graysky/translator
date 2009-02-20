@@ -1,299 +1,214 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<!DOCTYPE html 
-     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-  <title>File: README.rdoc</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-  <meta http-equiv="Content-Script-Type" content="text/javascript" />
-  <link rel="stylesheet" href=".././rdoc-style.css" type="text/css" media="screen" />
-  <script type="text/javascript">
-  // <![CDATA[
-
-  function popupCode( url ) {
-    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
-  }
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-    
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  
-  // Make codeblocks hidden by default
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  
-  // ]]>
-  </script>
-
-</head>
-<body>
-
-
-
-  <div id="fileHeader">
-    <h1>README.rdoc</h1>
-    <table class="header-table">
-    <tr class="top-aligned-row">
-      <td><strong>Path:</strong></td>
-      <td>README.rdoc
-      </td>
-    </tr>
-    <tr class="top-aligned-row">
-      <td><strong>Last Update:</strong></td>
-      <td>Wed Feb 11 23:58:49 -0500 2009</td>
-    </tr>
-    </table>
-  </div>
-  <!-- banner header -->
-
-  <div id="bodyContent">
-
-
-
-  <div id="contextContent">
-
-    <div id="description">
-      <h1><a href="../classes/Translator.html">Translator</a> - i18n tooling for Rails</h1>
-<p>
-<a href="../classes/Translator.html">Translator</a> make using the
-internationalization (i18n) facility introduced in Rails 2.2 simpler by
-keeping your code DRY through simple conventions, and makes testing easier.
-</p>
-<h2>The Problem</h2>
-<p>
-The (very!) helpful <a
-href="http://api.rubyonrails.org/classes/I18n.html">I18n</a> library finds
-keys in locale bundles, but doesn&#8216;t know anything about Rails
-applications. Applications that have a lot of strings need a system of
-keeping them organized. This can lead to write code that makes you repeat
-yourself again and again about which key to find.
-</p>
-<p>
-<a href="../classes/Translator.html">Translator</a> adds smarts to
-controllers, views, models &amp; mailers to know the context of the request
-to find a key. <a href="../classes/Translator.html">Translator</a> defines
-a convention for the hierarchy of keys within locale bundles that makes it
-simpler to code and maintain, while still getting all the benefits of the
-underlying <a href="../classes/I18n.html">I18n</a> library.
-</p>
-<p>
-Quick example - if you follow the key convention of structuring your locale
-bundle like:
-</p>
-<pre>
-  blog_posts: # controller
-    show: # action
-      title: &quot;My Awesome Blog Post&quot;
-      byline: &quot;Written by {{author}}&quot;
-</pre>
-<p>
-Then when writing the <tt>BlogPostsController.show</tt> action you can just
-use <tt>t(&#8216;title&#8217;)</tt> to fetch the string (equivalent to
-<tt>I18n.translate(&#8216;blog_posts.show.title&#8217;)</tt>). Similarly,
-in the <tt>show.erb</tt> template you can get use
-<tt>t(&#8216;byline&#8217;, :author =&gt; &quot;Mike&quot;)</tt>. This
-extends to Models and Mailers as well. As they say, &quot;Look at all the
-things I&#8216;m not doing!&quot;
-</p>
-<h2>Plugin Installation</h2>
-<p>
-To install this plugin into your Rails app (2.2 or later):
-</p>
-<pre>
-  ./script/plugin install git://github.com/graysky/translator.git
-</pre>
-<h2>Simple <tt>translate</tt> Everywhere</h2>
-<p>
-The <tt>translate</tt> (or shorter <tt>t</tt>) method is added to:
-</p>
-<ul>
-<li>ActionController
-
-</li>
-<li>ActionView
-
-</li>
-<li>ActiveRecord
-
-</li>
-<li>ActionMailer
-
-</li>
-</ul>
-<p>
-In the spirit of Rails, there is a hierarchy of keys that borrows the same
-layout as the typical &quot;views&quot; directory. A sample Blog
-application is used as an example.
-</p>
-<p>
-For controllers/views/mailers it is:
-</p>
-<pre>
-  en: # locale
-    # the controller name
-    blog_posts:
-      # the action name
-      index:
-        key: &quot;Hello World&quot;
-
-      # partials w/o underscore (template &quot;_footer.erb&quot;)
-      footer:
-        key: &quot;My Copyright&quot;
-
-    # &quot;layouts&quot; is fixed
-    layouts:
-      # the layout name (template &quot;main.erb&quot;)
-      main:
-        key: &quot;My App Name&quot;
-
-    # for shared partials called like: render :template =&gt; &quot;shared/user&quot;
-    # where &quot;shared&quot; is the directory name
-    shared:
-      # partial name w/o underscore (template &quot;_user.erb&quot;)
-      user:
-        key: &quot;Foo&quot;
-
-    # the full mailer name
-    blog_comment_mailer:
-      # the method name (does not include &quot;delever&quot;)
-      comment_notification:
-        subject: &quot;New Comment&quot;
-</pre>
-<p>
-For models it is:
-</p>
-<pre>
-  en:
-    # The model name
-    blog_post:
-      key: &quot;Custom validation error&quot;
-</pre>
-<h3>Key Lookup</h3>
-<p>
-When a key is looked up, <a
-href="../classes/Translator.html">Translator</a> adds extra scoping to the
-lookup based on where it is called from. For:
-</p>
-<ul>
-<li>Controllers &amp; Views the scope includes <tt>[:controller_name,
-:action_name]</tt>. (For shared partials it is <tt>[:template_path,
-:partial_name]</tt>)
-
-</li>
-<li>Mailers the scope includes <tt>[:mailer_name, :method_name]</tt>
-
-</li>
-<li>Models the scope includes <tt>[:model_name]</tt>
-
-</li>
-</ul>
-<p>
-But what happens when if you want to share strings across a controller?
-Let&#8216;s say you have error messages that are set in flash notices and
-then are shared between actions in a controller defined in the locale
-bundle like:
-</p>
-<pre>
-  blog_posts:
-    errors:
-      permission_denied: &quot;Permission denied to read this blog post&quot;
-</pre>
-<p>
-If <a href="../classes/Translator.html">Translator</a> doesn&#8216;t find
-the original key, it will remove a layer of scoping and try again. So if in
-our Blogs controller <tt>show</tt> action we want to set a
-<tt>flash[:error]</tt> to a permission denied message it can find the
-string by calling <tt>t(&#8216;error.permission_denied&#8217;)</tt>. <a
-href="../classes/Translator.html">Translator</a> will first look for
-&quot;blog_posts.show.error.permission_denied&quot;, which doesn&#8216;t
-exist. So it will then try to find
-&quot;blog_posts.errors.permission_denied&quot; and return the correct
-string. This can be used to create greater levels of scoping, or to force
-finding global strings (ex. <tt>t(&quot;global.app_name&quot;)</tt>).
-</p>
-<h2>Test Helpers</h2>
-<ul>
-<li><tt><a
-href="../classes/Translator.html#M000005">Translator.strict_mode</a></tt>
-will cause an exception to be raised for any missing translations. Enabled
-by default during testing to help find key accidently forgotten. It can be
-disabled by calling <tt><a
-href="../classes/Translator.html#M000005">Translator.strict_mode(false)</a></tt>
-(like in a test helper), but it can help catch typos.
-
-</li>
-<li><tt>assert_translated</tt> takes a block and asserts that all lookups
-within that block have real translations. It is a more targeted version of
-<tt>strict_mode</tt>. Example:
-
-<pre>
-  assert_translated do
-    # Will assert that all keys find valid translations inside the block
-    get :show
-  end
-</pre>
-</li>
-</ul>
-<h2>RDoc API</h2>
-<p>
-<a href="http://graysky.github.com/translator/rdoc/index.html">The RDocs
-are online</a> or can be generated via <tt>rake rdoc</tt> in the translator
-plugin directory.
-</p>
-<p>
-Bug reports welcome. <a href="http://github.com/graysky/translator">Patches
-very welcome</a>.
-</p>
-<p>
-Copyright (c) 2009 <a href="http://graysky.org">Mike Champion</a>, released
-under the MIT license
-</p>
-
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+  <head>
+    <title>File: README.rdoc [Translator - i18n tooling for Rails]</title>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+    <link href='../rdoc-style.css' media='screen' rel='stylesheet' type='text/css'>
+    <script type='text/javascript'>
+      //<![CDATA[
+        function popupCode(url) {
+          window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+        }
+        
+        function toggleCode(id) {
+          var code = document.getElementById(id)
+        
+          code.style.display = code.style.display != 'block' ? 'block' : 'none'
+          return true
+        }
+        
+        // Make codeblocks hidden by default
+        document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+      //]]>
+    </script>
+  </head>
+  <body class='page'>
+    <div class='file' id='wrapper'>
+      <div class='header'>
+        <div class='name'>README.rdoc</div>
+        <div class='paths'>
+          README.rdoc
+          (<a href="http://github.com/graysky/translator/tree/master/README.rdoc">view online</a>)
+        </div>
+        <div class='last-update'>
+          Last Update:
+          <span class='datetime'>Fri Feb 20 11:45:53 -0500 2009</span>
+        </div>
+      </div>
+      <div id='content'>
+        <div id='text'>
+          <div id='description'>
+            <h1><a href="../classes/Translator.html">Translator</a> - i18n tooling for Rails</h1>
+            <p>
+            <a href="../classes/Translator.html">Translator</a> makes using the
+            internationalization (i18n) facility introduced in Rails 2.2 simpler by
+            keeping your code DRY through simple conventions and makes testing easier.
+            </p>
+            <h2>The Problem</h2>
+            <p>
+            The (very!) helpful <a
+            href="http://api.rubyonrails.org/classes/I18n.html">I18n</a> library finds
+            keys in locale bundles (and more), but doesn&#8217;t know anything about
+            Rails applications. Applications that have a lot of strings need a system
+            of keeping them organized. <a
+            href="../classes/Translator.html">Translator</a> adds smarts to
+            controllers, views, models &amp; mailers to follow a simple convention when
+            finding keys. Having a convention for the hierarchy of keys within locale
+            bundles that makes it easier to code and maintain, while still using the
+            capabilities of the underlying <a href="../classes/I18n.html">I18n</a>
+            library. (Note: <a href="../classes/Translator.html">Translator</a> does
+            not depend on how the actual YAML/Ruby files are stored in the filesystem.)
+            </p>
+            <p>
+            Quick example - if you follow the key convention of structuring your locale
+            bundle like:
+            </p>
+            <pre>blog_posts: # controller&#x000A;  show: # action&#x000A;    title: &quot;My Awesome Blog Post&quot;&#x000A;    byline: &quot;Written by {{author}}&quot;</pre>
+            <p>
+            Then when writing the <tt>BlogPostsController.show</tt> action you can just
+            use <tt>t('title')</tt> to fetch the string (equivalent to
+            <tt>I18n.translate('blog_posts.show.title')</tt>). Similarly, in the
+            <tt>show.erb</tt> template you can get use <tt>t('byline', :author =&gt;
+            &quot;Mike&quot;)</tt>. This extends to models and mailers as well. As they
+            say, &#8220;Look at all the things I&#8217;m not doing!&#8220;
+            </p>
+            <h2>Plugin Installation</h2>
+            <p>
+            To install this plugin into your Rails app (2.2 or later):
+            </p>
+            <pre>./script/plugin install git://github.com/graysky/translator.git</pre>
+            <h2>RDocs</h2>
+            <p>
+            <a href="http://graysky.github.com/translator/rdoc/index.html">The RDocs
+            are online</a> or can be generated via <tt>rake rdoc</tt> in the translator
+            plugin directory.
+            </p>
+            <h2>Simple <tt>translate</tt> Everywhere</h2>
+            <p>
+            The <tt>translate</tt> (or shorter <tt>t</tt>) method is added to:
+            </p>
+            <ul>
+            <li>ActionController
+            
+            </li>
+            <li>ActionView
+            
+            </li>
+            <li>ActiveRecord
+            
+            </li>
+            <li>ActionMailer
+            
+            </li>
+            </ul>
+            <p>
+            In the spirit of Rails, there is a hierarchy of keys that borrows the same
+            layout as the typical &#8220;views&#8221; directory. A sample Blog
+            application is used as an example.
+            </p>
+            <p>
+            For controllers/views/mailers it is:
+            </p>
+            <pre>en: # locale&#x000A;  # the controller name&#x000A;  blog_posts:&#x000A;    # the action name&#x000A;    index:&#x000A;      key: &quot;Hello World&quot;&#x000A;&#x000A;    # partials w/o underscore (template &quot;_footer.erb&quot;)&#x000A;    footer:&#x000A;      key: &quot;My Copyright&quot;&#x000A;&#x000A;  # &quot;layouts&quot; is fixed&#x000A;  layouts:&#x000A;    # the layout name (template &quot;main.erb&quot;)&#x000A;    main:&#x000A;      key: &quot;My App Name&quot;&#x000A;&#x000A;  # for shared partials called like: render :template =&gt; &quot;shared/user&quot;&#x000A;  # where &quot;shared&quot; is the directory name&#x000A;  shared:&#x000A;    # partial name w/o underscore (template &quot;_user.erb&quot;)&#x000A;    user:&#x000A;      key: &quot;Foo&quot;&#x000A;&#x000A;  # the full mailer name&#x000A;  blog_comment_mailer:&#x000A;    # the method name (does not include &quot;delever&quot;)&#x000A;    comment_notification:&#x000A;      subject: &quot;New Comment&quot;</pre>
+            <p>
+            For models it is:
+            </p>
+            <pre>en:&#x000A;  # The model name&#x000A;  blog_post:&#x000A;    key: &quot;Custom validation error&quot;</pre>
+            <h3>Key Lookup</h3>
+            <p>
+            When a key is looked up, <a
+            href="../classes/Translator.html">Translator</a> adds extra scoping to the
+            lookup based on where it is called from. For:
+            </p>
+            <ul>
+            <li>Controllers &amp; views the scope includes <tt>[:controller_name,
+            :action_name]</tt>. (For shared partials it is <tt>[:template_path,
+            :partial_name]</tt>)
+            
+            </li>
+            <li>Mailers the scope includes <tt>[:mailer_name, :method_name]</tt>
+            
+            </li>
+            <li>Models the scope includes <tt>[:model_name]</tt>
+            
+            </li>
+            </ul>
+            <p>
+            But what happens if you want to share strings across a controller?
+            Let&#8217;s say you have error messages that are set in flash notices and
+            then are shared between actions in a controller defined in the locale
+            bundle like:
+            </p>
+            <pre>blog_posts:&#x000A;  errors:&#x000A;    permission_denied: &quot;Permission denied to read this blog post&quot;</pre>
+            <p>
+            If <a href="../classes/Translator.html">Translator</a> doesn&#8217;t find
+            the original key, it will remove a layer of scoping and try again. So if in
+            our Blogs controller <tt>show</tt> action we want to set a
+            <tt>flash[:error]</tt> to a permission denied message it can find the
+            string by calling <tt>t('errors.permission_denied')</tt>. <a
+            href="../classes/Translator.html">Translator</a> will first look for
+            &#8220;blog_posts.show.errors.permission_denied&#8220;, which doesn&#8217;t
+            exist. So it will then try to find
+            &#8220;blog_posts.errors.permission_denied&#8220; and return the correct
+            string. This can be used to create greater levels of scoping, or to force
+            finding global strings (e.g. <tt>t(&quot;global.app_name&quot;)</tt>).
+            </p>
+            <h2>Testing Help</h2>
+            <ul>
+            <li><tt><a
+            href="../classes/Translator.html#M000005">Translator.strict_mode</a></tt>
+            will cause an exception to be raised for any missing translations. Enabled
+            by default during testing to help find mistyped or accidently forgotten
+            keys. It can be disabled by calling <tt><a
+            href="../classes/Translator.html#M000005">Translator.strict_mode(false)</a></tt>
+            (in test_helper for example).
+            
+            </li>
+            <li><tt>assert_translated</tt> takes a block and asserts that all lookups
+            within that block have real translations. It is a more targeted version of
+            <tt>strict_mode</tt>. Example:
+            
+            <pre>assert_translated do&#x000A;  # Will assert that all keys find valid translations inside the block&#x000A;  get :show&#x000A;end</pre>
+            </li>
+            <li>If you&#8217;re trying to avoid hard-coding strings in tests, you can still
+            use the lookup that is added to models and controllers:
+            
+            <pre># Inside a test exercising a BlogPostController (@controller created in setup method)&#x000A;get :show, :id =&gt; 123&#x000A;# the byline should be in the body - uses @controller to make lookup easy (automatically knows controller name and action)&#x000A;assert_match @controller.t('byline', :name =&gt; &quot;Mike&quot;), @response.body</pre>
+            </li>
+            <li>Pseudo-translation mode. Pseudo-translation wraps all extracted strings
+            with leading and trailing text so that you can spot if you forgot any. It
+            can be enabled by <tt><a
+            href="../classes/Translator.html#M000007">Translator.pseudo_translate</a></tt>
+            (in an environment file or locale.rb for example). It does not change the
+            lookup process (e.g. <tt>t('blog_title')</tt>) but will transform the
+            returned string from &#8220;My Blog&#8221; to &#8220;[[ My Blog ]]&#8221;.
+            The text that is prepended / appended can be set by calling <tt><a
+            href="../classes/Translator.html#M000009">Translator.pseudo_prepend</a> =
+            &quot;@@&quot;</tt> (or <tt>append</tt>). <b>Pro Tip:</b> This can also be
+            used to see how a layout will display in a localized language that is
+            longer than the default. or example, German words tend to be significantly
+            longer than their English equivalents. By padding all strings you can test
+            how a layout will adapt and make changes.
+            
+            </li>
+            </ul>
+            <p>
+            Bug reports welcome. <a href="http://github.com/graysky/translator">Patches
+            very welcome</a>.
+            </p>
+            <p>
+            Copyright &#169; 2009 <a href="http://graysky.org">Mike Champion</a>,
+            released under the MIT license
+            </p>
+          </div>
+          <div id='section'>
+          </div>
+        </div>
+      </div>
+      <div id='footer-push'></div>
     </div>
-
-
-   </div>
-
-
-  </div>
-
-
-    <!-- if includes -->
-
-    <div id="section">
-
-
-
-
-
-      
-
-
-    <!-- if method_list -->
-
-
-  </div>
-
-
-<div id="validator-badges">
-  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
-</div>
-
-</body>
+    <div id='footer'>
+      <a href="http://github.com/mislav/hanna/tree/master"><strong>Hanna</strong> RDoc template</a>
+    </div>
+  </body>
 </html>
