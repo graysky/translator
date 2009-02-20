@@ -1,7 +1,9 @@
 = Translator - i18n tooling for Rails
 
-Translator makes using the internationalization (i18n) facility introduced in Rails 2.2 simpler by keeping your code DRY through simple conventions
-and makes testing easier.
+Translator makes using the internationalization (i18n) facility introduced in Rails 2.2 simpler through:
+* keeping your code DRY using simple conventions
+* make testing easier to catch missing keys
+* supplying a graceful "fallback" mode when a translation is missing in a user's locale
 
 == The Problem
 
@@ -27,14 +29,13 @@ To install this plugin into your Rails app (2.2 or later):
 
 == Simple +translate+ Everywhere
 
-The +translate+ (or shorter +t+) method is added to:
+Translator adds an enhanced +translate+ (or shorter +t+) method to:
 * ActionController
 * ActionView
 * ActiveRecord
 * ActionMailer
 
-In the spirit of Rails, there is a hierarchy of keys that borrows the same layout as the typical "views" directory. A sample Blog application 
-is used as an example.
+In the spirit of Rails, the convention for a hierarchy of keys borrows the same layout as the typical "views" directory. A sample Blog application is used as an example.
 
 For controllers/views/mailers it is:
   en: # locale
@@ -92,6 +93,24 @@ So if in our Blogs controller +show+ action we want to set a <tt>flash[:error]</
 Translator will first look for "blog_posts.show.errors.permission_denied", which doesn't exist. So it will then try to find 
 "blog_posts.errors.permission_denied" and return the correct string. This can be used to create greater levels of scoping, or to force finding 
 global strings (e.g. <tt>t("global.app_name")</tt>).
+
+== Graceful Locale Fallback
+
+Let's say you've extracted all your English strings, and even had them translated to Spanish to make your Spanish-speaking users extra happy. Then you have a brilliant idea for a new feature that needs to go live before the new pages are translated into Spanish. You still want your Spanish-speaking users to keep seeing the site in Spanish, but for these new pages to fallback to English. (While not exactly ideal, it is better than having "translation missing" messages or not externalizing strings.) To enable this fallback behavior:
+
+  # In the configuration
+  I18n.default_locale = :en
+  
+  # Enable the fallback mode to try :es first, then :en
+  Translator.fallback(true)
+  
+  
+  # Set in the code based on user's preference, their IP address, etc.
+  I18n.locale = :es
+  
+  # Everything else stays the same, but after Translator tries the normal scoping rules 
+  # in Spanish (:es), it will apply the same rules for the default locale (:en)
+  t('page_title')
 
 == Testing Help
 
