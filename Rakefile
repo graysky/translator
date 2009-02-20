@@ -1,6 +1,12 @@
 require 'rake'
 require 'rake/testtask'
-require 'rake/rdoctask'
+  
+# Use Hanna for pretty RDocs (if installed), otherwise normal rdocs
+begin
+  require 'hanna/rdoctask'
+rescue Exception
+  require 'rake/rdoctask'
+end
 
 desc 'Default: run unit tests.'
 task :default => :test
@@ -17,7 +23,7 @@ desc 'Generate documentation for the translator plugin.'
 Rake::RDocTask.new(:rdoc) do |rdoc|
   rdoc.rdoc_dir = 'rdoc'
   rdoc.title    = 'Translator - i18n tooling for Rails'
-  rdoc.options << '--line-numbers' << '--inline-source'
+  rdoc.options << '--line-numbers' << '--inline-source' << '--webcvs=http://github.com/graysky/translator/tree/master/'
   rdoc.rdoc_files.include('README.rdoc')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
