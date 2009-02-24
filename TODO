@@ -1,23 +1,10 @@
-List of things TODO
+List of feature ideas or todo items:
 
 - Confirm works with Rails 2.3
 
-Features Ideas
-- Enable a fallback mode, so instead of putting Missing Translation messages, fallback to English (or other locale)
-
 Testing
-
 - More readable translation assertion like: assert_match_translation full-key, text, error_msg
-
-- Pseudo-translating tool. If enabled, override default behavior to:
--- raise exception on missing translation
--- prepend/append markers to confirm that strings are externalized
-
 - rake task to find missing keys (started on branch)
-
-Refactor
-- Split up different parts into diff. tests / code for each part of MVC & mailers
-
 
 
 

@@ -25,10 +25,6 @@ app_root = plugin_root + '/../../..'
 if File.directory? app_root + '/config'
   ENV['RAILS_ENV'] = 'test'
   require File.expand_path(app_root + '/config/boot')
-else
-  # simply use installed gems if available
-  require 'rubygems'
-  gem 'actionpack'; gem 'activerecord'
 end
 
 # Define the connector
