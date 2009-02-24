@@ -4,7 +4,7 @@ require 'action_view/helpers/translation_helper'
 # Extentions to make internationalization (i18n) of a Rails application simpler. 
 # Support the method +translate+ (or shorter +t+) in models/view/controllers/mailers.
 module Translator
-  VERSION = '0.6.0'
+  VERSION = '0.6.1'
   
   # Whether strict mode is enabled
   @@strict_mode = false
@@ -270,6 +270,16 @@ module ActiveRecord #:nodoc:
     end
   
     alias :t :translate  
+  
+    # Add translate as a class method as well so that it can be used in validate statements, etc.
+    class << Base
+    
+      def translate(key, options={}) #:nodoc:
+        Translator.translate_with_scope([self.name.underscore], key, options)
+      end
+    
+      alias :t :translate
+    end
   end
 end
 
@@ -282,7 +292,7 @@ module ActionMailer #:nodoc:
     def translate(key, options={})
       Translator.translate_with_scope([self.mailer_name, self.action_name], key, options)
     end
-  
+
     alias :t :translate
   end
 end

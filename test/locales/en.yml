@@ -35,6 +35,7 @@ en:
   #
   blog_post:
     byline: "Written by {{author}}"
+    permalink: "Permalink to {{url}}"
 
   #
   # ActionMailers

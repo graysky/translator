@@ -186,7 +186,15 @@ class TranslatorTest < ActiveSupport::TestCase
     
     assert_equal I18n.t('blog_post.byline', :author => author), post.written_by
   end
-   
+  
+  # Test that the translate method is added as a class method too so that it can
+  # be used in validate calls, etc.
+  def test_class_method_translate
+    
+    url = "http://ricky.blog"
+    # Call a static method
+    assert_equal I18n.t('blog_post.permalink', :url => url), BlogPost.permalink(url)
+  end
    
   ### TestUnit helpers
   
