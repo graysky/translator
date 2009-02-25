@@ -1,6 +1,6 @@
 = Translator - i18n tooling for Rails
 
-<a name=translator-rdocs />
+\<a name=rdocs></a>
 
 Translator makes using the internationalization (i18n) facility introduced in Rails 2.2 simpler through:
 * keeping your code DRY using simple conventions
