@@ -80,6 +80,14 @@ class TranslatorTest < ActiveSupport::TestCase
     # flunk
   end
   
+  # Translator should raise an exception on a leading dot key to 
+  # preserve Rails 2.3 behavior. It is caught & handled
+  def test_leading_dot_key
+    assert_raise Translator::TranslatorError do
+      Translator.translate_with_scope(["blog_posts", "show"], ".category")
+    end
+  end
+  
   # Test that first the most specific scope will be tried (controller.action) then
   # back off to just the outer scope (controller)
   def test_controller_shared_messages
@@ -92,7 +100,9 @@ class TranslatorTest < ActiveSupport::TestCase
   
   ### ActionView Tests
   
-  # Test that translate works in Views
+  # Test that translate works in Views. 
+  # Also tests that a dotted key (".foo") can be accepted used, since
+  # Rails 2.3 supports it
   def test_view_show
     get :show
     assert_response :success

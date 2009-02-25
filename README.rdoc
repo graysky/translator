@@ -19,7 +19,7 @@ Then when writing the <tt>BlogPostsController.show</tt> action you can just use 
 
 == Plugin Installation
 
-To install this plugin into your Rails app (2.2 or later):
+To install this plugin into your Rails app (2.2 or 2.3+):
 
   ./script/plugin install git://github.com/graysky/translator.git
 
@@ -104,7 +104,6 @@ Let's say you've extracted all your English strings, and even had them translate
   # Enable the fallback mode to try :es first, then :en
   Translator.fallback(true)
   
-  
   # Set in the code based on user's preference, their IP address, etc.
   I18n.locale = :es
   
@@ -130,6 +129,7 @@ Let's say you've extracted all your English strings, and even had them translate
     assert_match @controller.t('byline', :name => "Mike"), @response.body
 
 * Pseudo-translation mode. Pseudo-translation wraps all extracted strings with leading and trailing text so that you can spot if you forgot any. It can be enabled by <tt>Translator.pseudo_translate</tt> (in an environment file or locale.rb for example). It does not change the lookup process (e.g. <tt>t('blog_title')</tt>) but will transform the returned string from "My Blog" to "[[ My Blog ]]". The text that is prepended / appended can be set by calling <tt>Translator.pseudo_prepend = "@@"</tt> (or +append+). <b>Pro Tip:</b> This can also be used to see how a layout will display in a localized language that is longer than the default. or example, German words tend to be significantly longer than their English equivalents. By padding all strings you can test how a layout will adapt and make changes.
+
 
 
 Bug reports welcome. {Patches very welcome}[http://github.com/graysky/translator].

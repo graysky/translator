@@ -9,6 +9,7 @@ en:
     show:
       title: "Catz Are Cute"
       body: "My cat {{name}} is the most awesome"
+      category: "catz, lolz"
     # archives action - key used from a view helper
     archives:
       title: "My Blog Archives"

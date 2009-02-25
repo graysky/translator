@@ -4,7 +4,11 @@ require 'action_view/helpers/translation_helper'
 # Extentions to make internationalization (i18n) of a Rails application simpler. 
 # Support the method +translate+ (or shorter +t+) in models/view/controllers/mailers.
 module Translator
-  VERSION = '0.6.1'
+  # Error for use within Translator
+  class TranslatorError < StandardError #:nodoc:
+  end
+  
+  VERSION = '0.7.0'
   
   # Whether strict mode is enabled
   @@strict_mode = false
@@ -45,15 +49,13 @@ module Translator
   def self.translate_with_scope(scope, key, options={})
     scope ||= [] # guard against nil scope
     
+    # Let Rails 2.3 handle keys starting with "."
+    raise TranslatorError, "Skip keys with leading dot" if key.to_s.first == "."
+    
     # Keep the original options clean
     original_scope = scope.dup
     scoped_options = {}.merge(options)
-    
-    # Convert the scopes to list of symbols and ignore anything
-    # that cannot be converted
-    scope.map! { |e| e.respond_to?(:to_sym) ? e.to_sym : nil }
-    scope.compact! # clear any nil values
-    
+        
     # Raise to know if the key was found
     scoped_options[:raise] = true
     
@@ -228,7 +230,7 @@ module ActionView #:nodoc:
       # put in span tag for a translation_missing.
       begin
         Translator.translate_with_scope([outer_scope, inner_scope], key, options.merge({:raise => true}))
-      rescue I18n::MissingTranslationData => exc
+      rescue Translator::TranslatorError, I18n::MissingTranslationData => exc
         # Call the original translate method
         str = translate_without_context(key, options)
         
@@ -246,7 +248,7 @@ module ActionView #:nodoc:
   end
 end
 
-module ActionController  #:nodoc:
+module ActionController #:nodoc:
   class Base
     
     # Add a +translate+ (or +t+) method to ActionController that is context-aware of what controller and action

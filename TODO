@@ -1,7 +1,5 @@
 List of feature ideas or todo items:
 
-- Confirm works with Rails 2.3
-
 Testing
 - More readable translation assertion like: assert_match_translation full-key, text, error_msg
 - rake task to find missing keys (started on branch)
