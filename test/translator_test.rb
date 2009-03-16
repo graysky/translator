@@ -293,10 +293,12 @@ class TranslatorTest < ActiveSupport::TestCase
   
   # Test that we can set up a callback for missing translations
   def test_missing_translation_callback
+    test_exception = nil
     test_key = nil
     test_options = nil
        
-    Translator.set_missing_translation_callback do |key, options|
+    Translator.set_missing_translation_callback do |ex, key, options|
+      test_exception = ex
       test_key = key
       test_options = options
     end
@@ -305,6 +307,7 @@ class TranslatorTest < ActiveSupport::TestCase
     assert_response :success
     assert_equal "missing_string", test_key
     assert_not_nil test_options
+    assert_not_nil test_exception
   end
   
   

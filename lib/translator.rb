@@ -27,16 +27,17 @@ module Translator
   # Used as a visible marker. Default is "]]"
   @@pseudo_append = " ]]"
   
-  def self.missing_translation_callback(key, options = {})
-    @@missing_translation_callback.call(key, options) if !@@missing_translation_callback.nil?
+  def self.missing_translation_callback(exception, key, options = {})
+    @@missing_translation_callback.call(exception, key, options) if !@@missing_translation_callback.nil?
   end
    
   # Set an optional block that gets called when there's a missing translation.
   # Block takes two required parameters:
-  #   key (expected to be key that was missing)
+  #   exception (original exception that was raised for the failed translation)
+  #   key (key that was missing)
   #   options (hash of options sent to translator)
   # Example:
-  #   set_missing_translation_callback do |key, options|
+  #   set_missing_translation_callback do |ex, key, options|
   #     logger.info("Failed to find #{key}")
   #   end
   def self.set_missing_translation_callback(&block)
@@ -256,7 +257,7 @@ module ActionView #:nodoc:
         if str =~ /span class\=\"translation_missing\"/
           # In strict mode, do not allow TranslationHelper to add "translation missing"
           raise if Translator.strict_mode?         
-          Translator.missing_translation_callback(key, options)
+          Translator.missing_translation_callback(exc, key, options)
         end
 
         str
