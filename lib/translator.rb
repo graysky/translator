@@ -27,6 +27,22 @@ module Translator
   # Used as a visible marker. Default is "]]"
   @@pseudo_append = " ]]"
   
+  def self.missing_translation_callback(key, options = {})
+    @@missing_translation_callback.call(key, options) if !@@missing_translation_callback.nil?
+  end
+   
+  # Set an optional block that gets called when there's a missing translation.
+  # Block takes two required parameters:
+  #   key (expected to be key that was missing)
+  #   options (hash of options sent to translator)
+  # Example:
+  #   set_missing_translation_callback do |key, options|
+  #     logger.info("Failed to find #{key}")
+  #   end
+  def self.set_missing_translation_callback(&block)
+    @@missing_translation_callback = block
+  end
+  
   # Performs lookup with a given scope. The scope should be an array of strings or symbols
   # ordered from highest to lowest scoping. For example, for a given PicturesController 
   # with an action "show" the scope should be ['pictures', 'show'] which happens automatically.
@@ -234,11 +250,15 @@ module ActionView #:nodoc:
         # Call the original translate method
         str = translate_without_context(key, options)
         
+        # View helper adds the translation missing span like:
         # In strict mode, do not allow TranslationHelper to add "translation missing" span like:
         # <span class="translation_missing">en, missing_string</span>
-        #
-        raise if Translator.strict_mode? && str =~ /span class\=\"translation_missing\"/
-        
+        if str =~ /span class\=\"translation_missing\"/
+          # In strict mode, do not allow TranslationHelper to add "translation missing"
+          raise if Translator.strict_mode?         
+          Translator.missing_translation_callback(key, options)
+        end
+
         str
       end
     end
