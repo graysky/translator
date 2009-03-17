@@ -32,7 +32,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>Fri Feb 20 17:29:29 -0500 2009</span>
+          <span class='datetime'>Tue Mar 17 10:10:25 -0400 2009</span>
         </div>
       </div>
       <div id='content'>
@@ -86,7 +86,7 @@
             </p>
             <h2>Plugin Installation</h2>
             <p>
-            To install this plugin into your Rails app (2.2 or later):
+            To install this plugin into your Rails app (2.2 or 2.3+):
             </p>
             <pre>./script/plugin install git://github.com/graysky/translator.git</pre>
             <h2>RDocs</h2>
@@ -181,11 +181,11 @@
             <h2>Testing Help</h2>
             <ul>
             <li><tt><a
-            href="../classes/Translator.html#M000007">Translator.strict_mode</a></tt>
+            href="../classes/Translator.html#M000009">Translator.strict_mode</a></tt>
             will cause an exception to be raised for any missing translations. Enabled
             by default during testing to help find mistyped or accidently forgotten
             keys. It can be disabled by calling <tt><a
-            href="../classes/Translator.html#M000007">Translator.strict_mode(false)</a></tt>
+            href="../classes/Translator.html#M000009">Translator.strict_mode(false)</a></tt>
             (in test_helper for example).
             
             </li>
@@ -203,12 +203,12 @@
             <li>Pseudo-translation mode. Pseudo-translation wraps all extracted strings
             with leading and trailing text so that you can spot if you forgot any. It
             can be enabled by <tt><a
-            href="../classes/Translator.html#M000009">Translator.pseudo_translate</a></tt>
+            href="../classes/Translator.html#M000011">Translator.pseudo_translate</a></tt>
             (in an environment file or locale.rb for example). It does not change the
             lookup process (e.g. <tt>t('blog_title')</tt>) but will transform the
             returned string from &#8220;My Blog&#8221; to &#8220;[[ My Blog ]]&#8221;.
             The text that is prepended / appended can be set by calling <tt><a
-            href="../classes/Translator.html#M000011">Translator.pseudo_prepend</a> =
+            href="../classes/Translator.html#M000013">Translator.pseudo_prepend</a> =
             &quot;@@&quot;</tt> (or <tt>append</tt>). <b>Pro Tip:</b> This can also be
             used to see how a layout will display in a localized language that is
             longer than the default. or example, German words tend to be significantly
