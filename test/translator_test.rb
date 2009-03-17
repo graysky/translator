@@ -310,5 +310,10 @@ class TranslatorTest < ActiveSupport::TestCase
     assert_not_nil test_exception
   end
   
+  # Test the generic translate method on Translator that does lookup without a scope, but includes fallback behavior.
+  def test_generic_translate_methods
+    assert_equal I18n.t('blog_posts.index.intro', :owner => "Ricky Rails"), Translator.translate('blog_posts.index.intro', :owner => "Ricky Rails")
+    assert_equal I18n.t('blog_posts.footer.copyright'), Translator.t('blog_posts.footer.copyright')
+  end
   
 end

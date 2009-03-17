@@ -8,7 +8,7 @@ module Translator
   class TranslatorError < StandardError #:nodoc:
   end
   
-  VERSION = '0.7.0'
+  VERSION = '0.8.0'
   
   # Whether strict mode is enabled
   @@strict_mode = false
@@ -20,22 +20,25 @@ module Translator
   @@pseudo_translate = false
   
   # Pseudo-translation text to prend to fetched strings.
-  # Used as a visible marker. Default is "[["
-  @@pseudo_prepend = "[[ "
+  # Used as a visible marker. Default is "["
+  @@pseudo_prepend = "["
   
   # Pseudo-translation text to append to fetched strings.
-  # Used as a visible marker. Default is "]]"
-  @@pseudo_append = " ]]"
+  # Used as a visible marker. Default is "]"
+  @@pseudo_append = "]"
   
-  def self.missing_translation_callback(exception, key, options = {})
+  # Invokes the missing translation callback, if it is defined
+  def self.missing_translation_callback(exception, key, options = {}) #:nodoc:
     @@missing_translation_callback.call(exception, key, options) if !@@missing_translation_callback.nil?
   end
    
-  # Set an optional block that gets called when there's a missing translation.
+  # Set an optional block that gets called when there's a missing translation within a view.
+  # This can be used to log missing translations in production.
+  #
   # Block takes two required parameters:
-  #   exception (original exception that was raised for the failed translation)
-  #   key (key that was missing)
-  #   options (hash of options sent to translator)
+  # - exception (original I18n::MissingTranslationData that was raised for the failed translation)
+  # - key (key that was missing)
+  # - options (hash of options sent to translator)
   # Example:
   #   set_missing_translation_callback do |ex, key, options|
   #     logger.info("Failed to find #{key}")
@@ -112,6 +115,17 @@ module Translator
     end
     
     str
+  end
+  
+  class << Translator
+    
+    # Generic translate method that mimics <tt>I18n.translate</tt> (e.g. no automatic scoping) but includes locale fallback
+    # and strict mode behavior.
+    def translate(key, options={})
+      Translator.translate_with_scope([], key, options)
+    end
+    
+    alias :t :translate
   end
   
   # When fallback mode is enabled if a key cannot be found in the set locale,
@@ -256,7 +270,9 @@ module ActionView #:nodoc:
         # <span class="translation_missing">en, missing_string</span>
         if str =~ /span class\=\"translation_missing\"/
           # In strict mode, do not allow TranslationHelper to add "translation missing"
-          raise if Translator.strict_mode?         
+          raise if Translator.strict_mode?
+          
+          # Invoke callback if it is defined
           Translator.missing_translation_callback(exc, key, options)
         end
 
