@@ -27,6 +27,10 @@ To install this plugin into your Rails app (2.2 or 2.3+):
 
 {The RDocs are online}[http://graysky.github.com/translator/rdoc/index.html] or can be generated via <tt>rake rdoc</tt> in the translator plugin directory.
 
+== Problems or Suggestions
+
+Please {file an issue in Lighthouse}[http://translator.lighthouseapp.com/projects/27556-translator/overview] or contact me.
+
 == Simple +translate+ Everywhere
 
 Translator adds an enhanced +translate+ (or shorter +t+) method to:
@@ -130,6 +134,7 @@ Let's say you've extracted all your English strings, and even had them translate
 
 * Pseudo-translation mode. Pseudo-translation wraps all extracted strings with leading and trailing text so that you can spot if you forgot any. It can be enabled by <tt>Translator.pseudo_translate</tt> (in an environment file or locale.rb for example). It does not change the lookup process (e.g. <tt>t('blog_title')</tt>) but will transform the returned string from "My Blog" to "[[ My Blog ]]". The text that is prepended / appended can be set by calling <tt>Translator.pseudo_prepend = "@@"</tt> (or +append+). <b>Pro Tip:</b> This can also be used to see how a layout will display in a localized language that is longer than the default. or example, German words tend to be significantly longer than their English equivalents. By padding all strings you can test how a layout will adapt and make changes.
 
+* Rake task to validate that YAML files are, in fact, valid YAML. Useful when getting back translations from a 3rd party service, this can be a quick way to catch a missing quote. Run like <tt>rake i18n:validate_yml</tt> and it will check all .yml files below <tt>RAILS_ROOT/config/locales</tt>.
 
 
 Bug reports welcome. {Patches very welcome}[http://github.com/graysky/translator].
