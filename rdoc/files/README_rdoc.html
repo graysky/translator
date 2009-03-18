@@ -32,7 +32,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>Tue Mar 17 10:31:31 -0400 2009</span>
+          <span class='datetime'>Wed Mar 18 14:49:13 -0400 2009</span>
         </div>
       </div>
       <div id='content'>
@@ -94,6 +94,12 @@
             <a href="http://graysky.github.com/translator/rdoc/index.html">The RDocs
             are online</a> or can be generated via <tt>rake rdoc</tt> in the translator
             plugin directory.
+            </p>
+            <h2>Problems or Suggestions</h2>
+            <p>
+            Please <a
+            href="http://translator.lighthouseapp.com/projects/27556-translator/overview">file
+            an issue in Lighthouse</a> or contact me.
             </p>
             <h2>Simple <tt>translate</tt> Everywhere</h2>
             <p>
@@ -214,6 +220,12 @@
             longer than the default. or example, German words tend to be significantly
             longer than their English equivalents. By padding all strings you can test
             how a layout will adapt and make changes.
+            
+            </li>
+            <li>Rake task to validate that YAML files are, in fact, valid YAML. Useful when
+            getting back translations from a 3rd party service, this can be a quick way
+            to catch a missing quote. Run like <tt>rake i18n:validate_yml</tt> and it
+            will check all .yml files below <tt>RAILS_ROOT/config/locales</tt>.
             
             </li>
             </ul>
