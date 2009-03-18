@@ -1,4 +1,9 @@
 en:
+  # Global strings
+  global:
+    sub:
+      key: "Hello i18n World"
+
   # Controller
   blog_posts:
     # typical actions
@@ -45,10 +50,3 @@ en:
     comment_notification:
       subject: "New Comment Notification"
       signoff: "Your Faithful Emailing Bot"
-      
-  # 
-  # Global string
-  # 
-  global:
-    sub:
-      key: "Hello i18n World"

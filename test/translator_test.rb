@@ -281,14 +281,19 @@ class TranslatorTest < ActiveSupport::TestCase
     get :index
     assert_response :success
     assert_not_nil assigns
-    #pp assigns
     
     # Test that controller could translate the intro from spanish
     assert_equal I18n.t('blog_posts.index.intro', :owner => "Ricky Rails"), assigns(:intro)
     
+    # Test that global strings are found correctly when they have a prefix
+    assert_equal I18n.t('global.sub.key', :locale => :es), @controller.t('global.sub.key')
+    
     # Should find the English version
     I18n.locale = :en # reset local so call to I18n pulls correct string
     assert_equal I18n.translate('blog_posts.index.title'), assigns(:page_title)
+    
+    # Test that global strings are found correctly when they have a prefix
+    assert_equal I18n.t('global.sub.key', :locale => :en), @controller.t('global.sub.key')
   end
   
   # Test that we can set up a callback for missing translations

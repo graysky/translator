@@ -8,7 +8,7 @@ module Translator
   class TranslatorError < StandardError #:nodoc:
   end
   
-  VERSION = '0.8.0'
+  VERSION = '0.8.5'
   
   # Whether strict mode is enabled
   @@strict_mode = false
@@ -86,8 +86,8 @@ module Translator
     
     # Loop through each scope until a string is found.
     # Example: starts with scope of [:blog_posts :show] then tries scope [:blog_posts] then 
-    # without automatically added scope.
-    while !scope.empty? && str.nil?
+    # without any automatically added scope ("[]").
+    while str.nil?
       # Set scope to use for search
       scoped_options[:scope] = scope
     
@@ -95,11 +95,12 @@ module Translator
         # try to find key within scope
         str = I18n.translate(key, scoped_options)
       rescue I18n::MissingTranslationData => exc
-        # did not find the string, remove a layer of scoping (if possible)
-        scope.pop
+        # did not find the string, remove a layer of scoping.
+        # break when there are no more layers to remove (pop returns nil)
+        break if scope.pop.nil?
       end
     end
-    
+
     # If a string is not yet found, potentially check the default locale if in fallback mode.
     if str.nil? && Translator.fallback? && (I18n.locale != I18n.default_locale) && options[:locale].nil?
       # Recurse original request, but in the context of the default locale

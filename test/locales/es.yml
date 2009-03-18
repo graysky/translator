@@ -1,5 +1,10 @@
 # Spanish version (pardon the bad translations)
 es:
+  # Global strings
+  global:
+    sub:
+      key: "Hola i18n Mundo"
+  
   # Controller
   blog_posts:
     # typical actions

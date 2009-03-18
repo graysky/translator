@@ -2,8 +2,6 @@ List of feature ideas or todo items:
 
 - Package as a Gem as well for versioning
 
-- Either add translate/t to Translator or I18n exception handler to provide generic calls to I18n while still getting the fallback behavior.
-
 - Currently code in things places like "lib" don't have any context.
 
 Testing
