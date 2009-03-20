@@ -6,6 +6,10 @@ en:
 
   # Controller
   blog_posts:
+    # shared strings
+    bio: "Hello!"
+    subscribe_feed: "Subscribe to my feed!"
+    
     # typical actions
     index: 
       title: "My Blog Posts"

@@ -296,6 +296,27 @@ class TranslatorTest < ActiveSupport::TestCase
     assert_equal I18n.t('global.sub.key', :locale => :en), @controller.t('global.sub.key')
   end
   
+  # Test that fallback 
+  def test_fallback_with_scoping_backoff
+    
+    # Enable fallback mode
+    Translator.fallback(true)
+    
+    # Set the locale to Spanish
+    I18n.locale = :es
+    
+    get :about
+    assert_response :success
+    
+    # Test that the Spanish version was found
+    bio = I18n.t('blog_posts.bio', :locale => :es)
+    assert_match /#{bio}/, @response.body
+    
+    # Only English version of this string
+    subscribe = I18n.t('blog_posts.subscribe_feed', :locale => :en)
+    assert_match /#{subscribe}/, @response.body
+  end
+  
   # Test that we can set up a callback for missing translations
   def test_missing_translation_callback
     test_exception = nil

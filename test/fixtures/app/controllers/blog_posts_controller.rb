@@ -21,6 +21,11 @@ class BlogPostsController < ActionController::Base
     render :template => "blog_posts/show"
   end
   
+  def about
+    # About page
+    render :template => "blog_posts/about"
+  end
+  
   # Render the show action with a layout
   def show_with_layout
     render :template => "blog_posts/show"

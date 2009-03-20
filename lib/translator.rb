@@ -8,7 +8,8 @@ module Translator
   class TranslatorError < StandardError #:nodoc:
   end
   
-  VERSION = '0.8.5'
+  # Translator version
+  VERSION = '0.8.6'
   
   # Whether strict mode is enabled
   @@strict_mode = false
@@ -26,6 +27,9 @@ module Translator
   # Pseudo-translation text to append to fetched strings.
   # Used as a visible marker. Default is "]"
   @@pseudo_append = "]"
+  
+  # An optional callback to be notified when there are missing translations in views
+  @@missing_translation_callback = nil
   
   # Invokes the missing translation callback, if it is defined
   def self.missing_translation_callback(exception, key, options = {}) #:nodoc:
@@ -92,8 +96,8 @@ module Translator
       scoped_options[:scope] = scope
     
       begin
-        # try to find key within scope
-        str = I18n.translate(key, scoped_options)
+        # try to find key within scope (dup the options because I18n modifies the hash)
+        str = I18n.translate(key, scoped_options.dup)
       rescue I18n::MissingTranslationData => exc
         # did not find the string, remove a layer of scoping.
         # break when there are no more layers to remove (pop returns nil)

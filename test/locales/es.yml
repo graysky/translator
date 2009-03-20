@@ -7,6 +7,9 @@ es:
   
   # Controller
   blog_posts:
+    # shared strings
+    bio: "Hola!"
+    
     # typical actions
     index: 
       # Purposely has the intro but *not* "title" key
