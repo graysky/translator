@@ -7,8 +7,9 @@ plugin_root = File.join(File.dirname(__FILE__), '..')
 app_root = plugin_root + '/../../..'
 
 if File.directory? app_root + '/config'
-  ENV['RAILS_ENV'] = 'test'
-  require File.expand_path(app_root + '/config/boot')
+  Object.const_set(:RAILS_ENV, ENV["RAILS_ENV"] ||= "test") unless defined?(RAILS_ENV)
+  Object.const_set(:RAILS_ROOT, app_root) unless defined?(RAILS_ROOT)
+  require "#{RAILS_ROOT}/config/environment"
 end
 
 require 'pp'
@@ -16,16 +17,19 @@ require 'test/unit'
 require 'rubygems'
 require 'active_support'
 require 'active_support/test_case'
-require 'action_pack'
+
 require 'action_controller'
 require 'action_controller/test_process'
 require 'action_mailer'
 require 'active_record'
 require 'active_record/fixtures'
 
+require 'action_pack'
+require 'action_view'
+require 'action_view/helpers'
+
 # Load the Translator init after loading Rails
 require File.dirname(__FILE__) + '/../init'
-RAILS_ENV  = "test" unless defined? RAILS_ENV
 
 # Set up an ActiveRecord connection to sqlite db for testing
 # Define the connector

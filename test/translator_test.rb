@@ -19,7 +19,7 @@ ActionController::Routing::Routes.draw do |map|
 end
 
 # Test Translator functionality
-class TranslatorTest < ActiveSupport::TestCase
+class TranslatorTest < ActionController::TestCase
 
   def setup
     # Create test locale bundle
