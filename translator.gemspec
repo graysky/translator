@@ -40,7 +40,7 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.1}
-  s.summary = %q{Rails internationalization extentions to keep code DRY}
+  s.summary = %q{Rails extentions to simplify internationalization}
   s.test_files = [
     "test/fixtures/app/controllers/blog_posts_controller.rb",
     "test/fixtures/app/helpers/blog_posts_helper.rb",
