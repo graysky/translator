@@ -17,11 +17,15 @@ Quick example - if you follow the key convention of structuring your locale bund
 
 Then when writing the <tt>BlogPostsController.show</tt> action you can just use <tt>t('title')</tt> to fetch the string (equivalent to <tt>I18n.translate('blog_posts.show.title')</tt>). Similarly, in the <tt>show.erb</tt> template you can get use <tt>t('byline', :author => "Mike")</tt>. This extends to models and mailers as well. As they say, "Look at all the things I'm not doing!"
 
-== Plugin Installation
+== Installation
 
 To install this plugin into your Rails app (2.2 or 2.3+):
 
   ./script/plugin install git://github.com/graysky/translator.git
+
+To install as a gem add the following to config/environment.rb:
+
+  config.gem “graysky-translator”, :source => ‘http://gems.github.com’
 
 == RDocs
 
