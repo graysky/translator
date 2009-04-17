@@ -5,7 +5,7 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gemspec|
     gemspec.name = "translator"
-    gemspec.summary = "Rails internationalization extentions to keep code DRY"
+    gemspec.summary = "Rails extentions to simplify internationalization"
     gemspec.email = "mike@graysky.org"
     gemspec.homepage = "http://github.com/graysky/translator"
     gemspec.description = "Translator makes using Rails internationalization simpler"
