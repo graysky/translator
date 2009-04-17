@@ -1,5 +1,20 @@
 require 'rake'
 require 'rake/testtask'
+
+begin
+  require 'jeweler'
+  Jeweler::Tasks.new do |gemspec|
+    gemspec.name = "translator"
+    gemspec.summary = "Rails internationalization extentions to keep code DRY"
+    gemspec.email = "mike@graysky.org"
+    gemspec.homepage = "http://github.com/graysky/translator"
+    gemspec.description = "Translator makes using Rails internationalization simpler"
+    gemspec.authors = ["Mike Champion"]
+  end
+rescue LoadError
+  puts "Jeweler not available. Install it with: sudo gem install technicalpickles-jeweler -s http://gems.github.com"
+end
+
   
 # Use Hanna for pretty RDocs (if installed), otherwise normal rdocs
 begin
