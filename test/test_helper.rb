@@ -1,3 +1,17 @@
+# Load Rails from the app, which allows picking up a frozen rails install 
+# instead of from the gems
+#
+# Borrowed from setup in classic_pagination plugin
+plugin_root = File.join(File.dirname(__FILE__), '..')
+# is the plugin installed in an application?
+app_root = plugin_root + '/../../..'
+
+if File.directory? app_root + '/config'
+  ENV['RAILS_ENV'] = 'test'
+  require File.expand_path(app_root + '/config/boot')
+end
+
+require 'pp'
 require 'test/unit'
 require 'rubygems'
 require 'active_support'
@@ -9,24 +23,11 @@ require 'action_mailer'
 require 'active_record'
 require 'active_record/fixtures'
 
-require 'pp'
-
+# Load the Translator init after loading Rails
 require File.dirname(__FILE__) + '/../init'
 RAILS_ENV  = "test" unless defined? RAILS_ENV
 
 # Set up an ActiveRecord connection to sqlite db for testing
-# 
-# Borrowed from setup in classic_pagination plugin
-
-plugin_root = File.join(File.dirname(__FILE__), '..')
-# is the plugin installed in an application?
-app_root = plugin_root + '/../../..'
-
-if File.directory? app_root + '/config'
-  ENV['RAILS_ENV'] = 'test'
-  require File.expand_path(app_root + '/config/boot')
-end
-
 # Define the connector
 class ActiveRecordTestConnector
   cattr_accessor :able_to_connect
