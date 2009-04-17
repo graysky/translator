@@ -29,7 +29,7 @@ To install this plugin into your Rails app (2.2 or 2.3+):
 
 == Problems or Suggestions
 
-Please {file an issue in Lighthouse}[http://translator.lighthouseapp.com/projects/27556-translator/overview] or contact me.
+Please {file an issue in the Github bug tracker}[http://github.com/graysky/translator/issues/] or contact me.
 
 == Simple +translate+ Everywhere
 
