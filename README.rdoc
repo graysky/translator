@@ -146,4 +146,4 @@ Let's say you've extracted all your English strings, and even had them translate
 
 Bug reports welcome. {Patches very welcome}[http://github.com/graysky/translator].
 
-Copyright (c) 2009 {Mike Champion}[http://graysky.org], released under the MIT license
+Copyright (c) 2009 {Mike Champion}[http://graysky.org], released under the MIT license.
