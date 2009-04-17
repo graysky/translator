@@ -18,8 +18,16 @@ ActionController::Routing::Routes.draw do |map|
   map.connect ':controller/:action/:id'
 end
 
+# For Rails 2.2 compat
+parent_module = ActiveSupport::TestCase
+
+if Rails::VERSION::MAJOR == 2 && Rails::VERSION::MINOR > 2
+  # Rails 2.3 compat
+  parent_module = ActionController::TestCase
+end
+
 # Test Translator functionality
-class TranslatorTest < ActionController::TestCase
+class TranslatorTest < parent_module
 
   def setup
     # Create test locale bundle
