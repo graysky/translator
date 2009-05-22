@@ -72,7 +72,7 @@ For controllers/views/mailers it is:
 
     # the full mailer name
     blog_comment_mailer:
-      # the method name (does not include "delever")
+      # the method name (does not include "deliver")
       comment_notification:
         subject: "New Comment"
         
