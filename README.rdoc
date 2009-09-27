@@ -25,7 +25,7 @@ To install this plugin into your Rails app (2.2 or 2.3+):
 
 To install as a gem add the following to config/environment.rb:
 
-  config.gem "graysky-translator", :lib => "translator" :source => "http://gems.github.com"
+  config.gem "graysky-translator", :lib => "translator", :source => "http://gems.github.com"
 
 == RDocs
 
