@@ -40,6 +40,12 @@ class BlogPostsController < ActionController::Base
   def missing_translation
     render :template => "blog_posts/missing_translation"
   end
+
+  def ajax_message
+    render :update do |page|
+      page << t('no_template.ajax_message')
+    end
+  end
   
   def different_formats
     # Get the same tagline using the different formats

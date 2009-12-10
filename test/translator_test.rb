@@ -176,6 +176,12 @@ class TranslatorTest < parent_module
     assert_response :error
     assert_match /18n::MissingTranslationData/, @response.body, "Exception should be for a missing translation"
   end
+
+  def test_view_without_template
+    get :ajax_message
+    message = I18n.t('no_template.ajax_message')
+    assert_match /#{message}/, @response.body
+  end
   
   ### ActionMailer Tests
   
